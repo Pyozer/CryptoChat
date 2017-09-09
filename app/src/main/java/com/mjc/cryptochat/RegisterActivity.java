@@ -12,9 +12,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends BaseActivity {
@@ -24,6 +22,8 @@ public class RegisterActivity extends BaseActivity {
     private EditText mRegisterEmail;
     private EditText mRegisterPass;
     private EditText mRegisterPassConf;
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +45,10 @@ public class RegisterActivity extends BaseActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
+
+        mAuth = FirebaseAuth.getInstance();
     }
 
     private void validForm() {
@@ -103,15 +104,13 @@ public class RegisterActivity extends BaseActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             onAuthSuccess(user);
                         } else {
-                            String error;
                             try {
                                 throw task.getException();
                             } catch(Exception e) {
-                                error = e.getMessage();
+                                Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                             }
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(RegisterActivity.this, error, Toast.LENGTH_LONG).show();
                         }
                     }
                 });
