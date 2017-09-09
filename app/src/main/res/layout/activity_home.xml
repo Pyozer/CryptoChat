@@ -1,9 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
     tools:context="com.mjc.cryptochat.HomeActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.AppCompat.Headline"
+        android:textAlignment="center"
+        android:text="Bienvenue sur CryptoChat !"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:textAlignment="center"
+        android:text="Discute de manière totalement crypter.\n Seul ceux ayant la clé pourront lire vos messages."/>
+
+    <Button
+        android:id="@+id/home_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Inscription" />
+
+    <Button
+        android:id="@+id/home_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Connexion" />
+
+</LinearLayout>

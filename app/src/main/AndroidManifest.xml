@@ -25,11 +25,13 @@
 
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".HomeActivity" />
 
         <activity
             android:name=".RegisterActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".HomeActivity"/>
     </application>
 
 </manifest>
