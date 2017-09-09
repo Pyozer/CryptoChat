@@ -1,12 +1,22 @@
 package com.mjc.cryptochat;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
-public class RegisterActivity extends AppCompatActivity {
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseUser;
+
+public class RegisterActivity extends BaseActivity {
+
+    private final static String TAG = "RegisterActivity";
 
     private EditText mRegisterEmail;
     private EditText mRegisterPass;
@@ -38,15 +48,63 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private boolean validForm() {
-        // TODO: Vérifié la validité du formulaire
+    private void validForm() {
+        mRegisterEmail.setError(null);
+        mRegisterPass.setError(null);
+        mRegisterPassConf.setError(null);
 
-        return true;
+        String email = mRegisterEmail.getText().toString();
+        String password = mRegisterPass.getText().toString();
+        String passwordConf = mRegisterPassConf.getText().toString();
+
+        boolean cancel = false;
+
+        if (TextUtils.isEmpty(email)) {
+            mRegisterEmail.setError(getString(R.string.error_field_required));
+            cancel = true;
+        }
+        if (TextUtils.isEmpty(password)) {
+            mRegisterPass.setError(getString(R.string.error_field_required));
+            cancel = true;
+        }
+        if (TextUtils.isEmpty(passwordConf)) {
+            mRegisterPassConf.setError(getString(R.string.error_field_required));
+            cancel = true;
+        }
+        if (password.length() < AppConfig.MIN_PASSWORD_LENGTH) {
+            mRegisterPassConf.setError(String.format(getString(R.string.error_short_password), AppConfig.MIN_PASSWORD_LENGTH));
+            cancel = true;
+        }
+        if (password.equals(passwordConf)) {
+            mRegisterPassConf.setError(getString(R.string.error_password_different));
+            cancel = true;
+        }
+
+        if (!cancel) {
+            registerUser(email, password);
+        }
     }
 
-    private void registerUser() {
-        if(!validForm()) return;
+    private void registerUser(String email, String password) {
+        showProgressDialog();
 
-        // TODO: Inscrire l'utilisateur à Firebase
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        hideProgressDialog();
+
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            onAuthSuccess(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(RegisterActivity.this, "Authentication failed.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
 }

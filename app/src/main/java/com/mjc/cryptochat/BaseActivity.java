@@ -21,6 +21,9 @@ public class BaseActivity extends AppCompatActivity {
 
     static boolean isInitialized = false;
 
+    FirebaseAuth mAuth;
+    FirebaseDatabase mDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,14 +42,15 @@ public class BaseActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = auth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
         if(redirectToLogin) {
-            onAuthFailed(auth, currentUser);
+            onAuthFailed(mAuth, currentUser);
         } else {
             onAuthSuccess(currentUser);
         }
-
     }
 
     public void showProgressDialog() {

@@ -4,4 +4,8 @@
 
     <string name="loading">Chargement…</string>
     <string name="error_must_be_login">Vous devez être connecté !</string>
+    <string name="error_field_required">Vous devez remplir ce champs.</string>
+    <string name="error_short_password">Votre mot de passe doit contenir au moins %1$d caractères.</string>
+    <string name="error_password_different">Le mot de passe n\'est pas identique.</string>
+
 </resources>
