@@ -12,6 +12,9 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends BaseActivity {
@@ -45,7 +48,6 @@ public class RegisterActivity extends BaseActivity {
                 finish();
             }
         });
-
     }
 
     private void validForm() {
@@ -75,7 +77,7 @@ public class RegisterActivity extends BaseActivity {
             mRegisterPassConf.setError(String.format(getString(R.string.error_short_password), AppConfig.MIN_PASSWORD_LENGTH));
             cancel = true;
         }
-        if (password.equals(passwordConf)) {
+        if (!password.equals(passwordConf)) {
             mRegisterPassConf.setError(getString(R.string.error_password_different));
             cancel = true;
         }
@@ -97,12 +99,19 @@ public class RegisterActivity extends BaseActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
+
                             FirebaseUser user = mAuth.getCurrentUser();
                             onAuthSuccess(user);
                         } else {
+                            String error;
+                            try {
+                                throw task.getException();
+                            } catch(Exception e) {
+                                error = e.getMessage();
+                            }
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(RegisterActivity.this, "Authentication failed.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(RegisterActivity.this, error, Toast.LENGTH_LONG).show();
                         }
                     }
                 });
