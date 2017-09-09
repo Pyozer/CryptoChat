@@ -23,8 +23,6 @@ public class RegisterActivity extends BaseActivity {
     private EditText mRegisterPass;
     private EditText mRegisterPassConf;
 
-    private FirebaseAuth mAuth;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

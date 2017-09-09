@@ -20,8 +20,6 @@ public class LoginActivity extends BaseActivity {
     private EditText mInputLogin;
     private EditText mInputPassword;
 
-    private FirebaseAuth mAuth;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

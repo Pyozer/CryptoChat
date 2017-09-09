@@ -22,11 +22,13 @@ public class BaseActivity extends AppCompatActivity {
 
     static boolean isInitialized = false;
 
+    FirebaseAuth mAuth;
+
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(redirectToLogin) {
             onAuthFailed(mAuth, currentUser);
