@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,20 +21,6 @@ public class BaseActivity extends AppCompatActivity {
     public boolean redirectToLogin = false;
 
     static boolean isInitialized = false;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        try{
-            if(!isInitialized){
-                FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-                isInitialized = true;
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onStart() {
