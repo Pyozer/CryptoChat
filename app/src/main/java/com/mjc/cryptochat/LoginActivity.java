@@ -17,15 +17,12 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends BaseActivity {
     private EditText login, password;
     private Button connect;
-    private FirebaseAuth mAuth;
     private static final String TAG = "LoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        mAuth = FirebaseAuth.getInstance();
 
         login = findViewById(R.id.login);
         password = findViewById(R.id.password);
