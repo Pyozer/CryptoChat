@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    tools:context="com.mjc.cryptochat.RegisterActivity"
-    android:orientation="vertical">
-    
+    android:orientation="vertical"
+    android:padding="@dimen/layout_margin"
+    tools:context="com.mjc.cryptochat.RegisterActivity">
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -16,8 +16,8 @@
             android:id="@+id/register_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:hint="Adresse mail" />
+            android:hint="@string/mail_address"
+            android:inputType="textEmailAddress" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -29,8 +29,8 @@
             android:id="@+id/register_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:hint="Mot de passe" />
+            android:hint="@string/password"
+            android:inputType="textPassword" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -42,8 +42,8 @@
             android:id="@+id/register_password_conf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:hint="Confirmation mot de passe" />
+            android:hint="@string/password_conf"
+            android:inputType="textPassword" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -51,13 +51,13 @@
         android:id="@+id/register_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Inscription"/>
+        android:text="@string/register_button" />
 
     <Button
         android:id="@+id/register_cancel"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:text="Retour" />
+        android:text="@string/back_button" />
 
 </LinearLayout>
