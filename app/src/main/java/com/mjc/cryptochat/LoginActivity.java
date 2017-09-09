@@ -2,11 +2,12 @@ package com.mjc.cryptochat;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
 
 public class LoginActivity extends AppCompatActivity {
-    private TextView login, password;
+    private EditText login, password;
     private Button connect;
 
     @Override
@@ -14,9 +15,16 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        login = (TextView)findViewById(R.id.login);
-        password = (TextView)findViewById(R.id.password);
+        login = findViewById(R.id.login);
+        password = findViewById(R.id.password);
 
-        connect = (Button)findViewById(R.id.connect);
+        connect = findViewById(R.id.connect);
+
+        connect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: Connecter l'utilisateur
+            }
+        });
     }
 }
