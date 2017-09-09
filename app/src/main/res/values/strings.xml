@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">CryptoChat</string>
     <string name="action_settings">Settings</string>
+
+    <string name="loading">Chargement…</string>
+    <string name="error_must_be_login">Vous devez être connecté !</string>
 </resources>

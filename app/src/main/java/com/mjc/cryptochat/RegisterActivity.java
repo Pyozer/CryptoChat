@@ -35,6 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 
     private boolean validForm() {
