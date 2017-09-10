@@ -1,21 +1,27 @@
 package com.mjc.cryptochat;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends BaseActivity {
+    private RecyclerView mSaloonList;
+    private List<Saloon> saloons = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,14 +33,46 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mSaloonList = findViewById(R.id.saloonList);
+        loadData();
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Ajouter un salon à faire", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                displayAddingSaloonDialog();
             }
         });
+    }
+    public void loadData(){
+        //Data from the database
+    }
+
+    public void displayAddingSaloonDialog(){
+        final Dialog dialog = new Dialog(this);
+
+        dialog.setContentView(R.layout.add_saloon);
+        dialog.setTitle("Add a saloon");
+
+        final TextView name = dialog.findViewById(R.id.saloonName);
+        final TextView hint = dialog.findViewById(R.id.saloonHint);
+
+        dialog.findViewById(R.id.addSaloon).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saloons.add(new Saloon(name.getText().toString(),hint.getText().toString()));
+                //ntify adapter
+                dialog.dismiss();
+            }
+        });
+
+        dialog.findViewById(R.id.cancelSaloon).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override
