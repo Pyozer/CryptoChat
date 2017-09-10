@@ -4,8 +4,10 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -13,16 +15,16 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class BaseActivity extends AppCompatActivity {
 
-    private final static String INTENT_SNACKBAR = "intent_snackbar_msg";
+    public final static String INTENT_SNACKBAR = "intent_snackbar_msg";
 
     @VisibleForTesting
     public ProgressDialog mProgressDialog;
 
     public boolean redirectToLogin = false;
 
-    static boolean isInitialized = false;
+    public static boolean isInitialized = false;
 
-    FirebaseAuth mAuth;
+    public FirebaseAuth mAuth;
 
     @Override
     public void onStart() {
@@ -55,6 +57,14 @@ public class BaseActivity extends AppCompatActivity {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
+    }
+
+    public void showSnackbar(int stringId) {
+        showSnackbar(getString(stringId));
+    }
+    public void showSnackbar(String message) {
+        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     public void onAuthFailed(FirebaseAuth auth, FirebaseUser user) {
