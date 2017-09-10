@@ -5,23 +5,40 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends BaseActivity {
+    private static final String TAG = "MainActivity";
+
     private RecyclerView mSaloonList;
     private List<Saloon> saloons = new ArrayList<>();
+    private DatabaseReference mDatabase;
+    private FirebaseRecyclerAdapter<Saloon, MainActivity.SaloonViewHolder> mAdapter;
+    private Snackbar mSnackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +51,8 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(toolbar);
 
         mSaloonList = findViewById(R.id.saloonList);
-        loadData();
+        mSaloonList.setHasFixedSize(true);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -43,9 +61,37 @@ public class MainActivity extends BaseActivity {
                 displayAddingSaloonDialog();
             }
         });
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        mSaloonList.setLayoutManager(new LinearLayoutManager(this));
+
+
+        Query postsQuery = getQuery(mDatabase);
+        mAdapter = new FirebaseRecyclerAdapter<Saloon, SaloonViewHolder>(Saloon.class, R.layout.saloon_tile_layout,
+                SaloonViewHolder.class, postsQuery) {
+            @Override
+            protected void populateViewHolder(final SaloonViewHolder viewHolder, final Saloon saloon, final int position) {
+                final DatabaseReference postRef = getRef(position);
+
+                // Set click listener for the whole post view
+                final String postKey = postRef.getKey();
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Launch PostDetailActivity
+                        Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+                        intent.putExtra(ChatActivity.EXTRA_POST_KEY, postKey);
+                        startActivity(intent);
+                    }
+                });
+            }
+        };
+        mSaloonList.setAdapter(mAdapter);
     }
-    public void loadData(){
-        //Data from the database
+    public Query getQuery(DatabaseReference databaseRef){
+        Query salonQuery = databaseRef.child("salons").orderByChild("nbMsg");
+        return salonQuery;
     }
 
     public void displayAddingSaloonDialog(){
@@ -60,8 +106,7 @@ public class MainActivity extends BaseActivity {
         dialog.findViewById(R.id.addSaloon).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saloons.add(new Saloon(name.getText().toString(),hint.getText().toString()));
-                //ntify adapter
+                validate(0,name.getText().toString(),mAuth.getCurrentUser().getUid(),hint.getText().toString());
                 dialog.dismiss();
             }
         });
@@ -73,6 +118,40 @@ public class MainActivity extends BaseActivity {
             }
         });
         dialog.show();
+    }
+    public void validate(int msgNb, String name, String authorId, String hint){
+        writeNewSaloon(msgNb, name,authorId, hint);
+    }
+    private void writeNewSaloon(final int msgNb, final String name, final String authorId, final String hint) {
+        mDatabase.child("users").child(authorId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                hideProgressDialog();
+                // Get user value
+                User user = dataSnapshot.getValue(User.class);
+
+                if (user != null) {
+                    createNewSaloon(msgNb, name,authorId,user.toString(), hint);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+            }
+        });
+    }
+    public void createNewSaloon(int msgNb, String name, String authorId,String authorName, String hint){
+        // Create new post at /user-posts/$userid/$postid and at
+        // /posts/$postid simultaneously
+        String key = mDatabase.child("saloon").push().getKey();
+        Saloon post = new Saloon(msgNb, name, authorId, authorName, hint);
+        Map<String, Object> postValues = post.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/saloons/" + key, postValues);
+        //childUpdates.put("/user-posts/" + id + "/" + key, postValues);
+
+        mDatabase.updateChildren(childUpdates);
     }
 
     @Override
@@ -107,5 +186,23 @@ public class MainActivity extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    class SaloonViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView titleView;
+        public TextView authorView;
+
+        public SaloonViewHolder(View itemView) {
+            super(itemView);
+
+            titleView = (TextView) itemView.findViewById(R.id.saloonTileName);
+            authorView = (TextView) itemView.findViewById(R.id.saloonTileAuthor);
+        }
+
+        public void bindToPost(Saloon saloon, View.OnClickListener starClickListener) {
+            titleView.setText(saloon.getName());
+            authorView.setText(saloon.getHint());
+        }
     }
 }
