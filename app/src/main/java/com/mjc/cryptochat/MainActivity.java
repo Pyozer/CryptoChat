@@ -88,8 +88,10 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         // Launch PostDetailActivity
+                        Log.e(TAG, postKey);
                         Intent intent = new Intent(MainActivity.this, ChatActivity.class);
                         intent.putExtra(ChatActivity.EXTRA_POST_KEY, postKey);
+                        intent.putExtra("saloonName",saloon.getName());
                         startActivity(intent);
                     }
                 });
