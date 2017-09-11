@@ -90,6 +90,8 @@ public class MainActivity extends BaseActivity {
                         startActivity(intent);
                     }
                 });
+
+                viewHolder.bindToPost(saloon);
             }
         };
         mSaloonList.setAdapter(mAdapter);
@@ -223,7 +225,7 @@ public class MainActivity extends BaseActivity {
 
         }
 
-        public void bindToPost(Saloon saloon, View.OnClickListener starClickListener) {
+        public void bindToPost(Saloon saloon) {
             titleView.setText(saloon.getName());
             authorView.setText(saloon.getHint());
         }
