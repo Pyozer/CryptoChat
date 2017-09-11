@@ -10,11 +10,14 @@ import java.util.Map;
  */
 
 public class Saloon {
+
     private int messageNumber;
     private String name;
     private String authorId;
     private String authorName;
     private String hint;
+
+    public Saloon() {}
 
     public Saloon(int messageNumber, String name, String authorId, String authorName, String hint){
         super();

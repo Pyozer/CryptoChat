@@ -40,10 +40,7 @@ public class MainActivity extends BaseActivity {
 
     //Variables used for the database
     private DatabaseReference mDatabase;
-    private FirebaseRecyclerAdapter<Saloon, MainActivity.SaloonViewHolder> mAdapter;
-
-
-
+    private FirebaseRecyclerAdapter<Saloon, SaloonViewHolder> mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +70,7 @@ public class MainActivity extends BaseActivity {
 
 
         Query postsQuery = getQuery(mDatabase);
-        mAdapter = new FirebaseRecyclerAdapter<Saloon, SaloonViewHolder>(Saloon.class, R.layout.saloon_tile_layout,
-                SaloonViewHolder.class, postsQuery) {
+        mAdapter = new FirebaseRecyclerAdapter<Saloon, SaloonViewHolder>(Saloon.class, R.layout.saloon_tile_layout, SaloonViewHolder.class, postsQuery) {
             @Override
             protected void populateViewHolder(final SaloonViewHolder viewHolder, final Saloon saloon, final int position) {
                 final DatabaseReference postRef = getRef(position);
@@ -210,24 +206,5 @@ public class MainActivity extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    class SaloonViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView titleView;
-        public TextView authorView;
-
-        public SaloonViewHolder(View itemView) {
-            super(itemView);
-
-            titleView = (TextView) itemView.findViewById(R.id.saloonTileName);
-            authorView = (TextView) itemView.findViewById(R.id.saloonTileAuthor);
-
-        }
-
-        public void bindToPost(Saloon saloon) {
-            titleView.setText(saloon.getName());
-            authorView.setText(saloon.getHint());
-        }
     }
 }
