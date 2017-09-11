@@ -15,7 +15,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -37,8 +39,8 @@ public class MainActivity extends BaseActivity {
     //Variables used by the UI
     private RecyclerView mSaloonList;
 
-    private TextView nameDialog;
-    private TextView hintDialog;
+    private EditText nameDialog;
+    private EditText hintDialog;
 
     //Variables used for the database
     private DatabaseReference mDatabase;
@@ -80,7 +82,6 @@ public class MainActivity extends BaseActivity {
             protected void populateViewHolder(final SaloonViewHolder viewHolder, final Saloon saloon, final int position) {
                 final DatabaseReference postRef = getRef(position);
 
-                Log.e("TEST", saloon.getAuthorName());
                 // Set click listener for the whole post view
                 final String postKey = postRef.getKey();
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +168,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                showSnackbar("Utilisateur inconnu, reconnectez-vous.");
             }
         });
     }
