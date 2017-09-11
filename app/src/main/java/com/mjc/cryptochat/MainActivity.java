@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -40,7 +42,7 @@ public class MainActivity extends BaseActivity {
 
     //Variables used for the database
     private DatabaseReference mDatabase;
-    private FirebaseRecyclerAdapter<Saloon, SaloonViewHolder> mAdapter;
+    private FirebaseRecyclerAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +54,17 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.keepSynced(true);
+
         mSaloonList = findViewById(R.id.saloonList);
         mSaloonList.setHasFixedSize(true);
-
+        mSaloonList.setItemAnimator(new DefaultItemAnimator());
+        mSaloonList.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        LinearLayoutManager mManager = new LinearLayoutManager(MainActivity.this);
+        mManager.setReverseLayout(true);
+        mManager.setStackFromEnd(true);
+        mSaloonList.setLayoutManager(mManager);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -64,17 +74,13 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        mSaloonList.setLayoutManager(new LinearLayoutManager(this));
-
-
         Query postsQuery = getQuery(mDatabase);
         mAdapter = new FirebaseRecyclerAdapter<Saloon, SaloonViewHolder>(Saloon.class, R.layout.saloon_tile_layout, SaloonViewHolder.class, postsQuery) {
             @Override
             protected void populateViewHolder(final SaloonViewHolder viewHolder, final Saloon saloon, final int position) {
                 final DatabaseReference postRef = getRef(position);
 
+                Log.e("TEST", saloon.getAuthorName());
                 // Set click listener for the whole post view
                 final String postKey = postRef.getKey();
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -92,12 +98,12 @@ public class MainActivity extends BaseActivity {
         };
         mSaloonList.setAdapter(mAdapter);
     }
-    public Query getQuery(DatabaseReference databaseRef){
-        Query salonQuery = databaseRef.child("saloons").orderByChild("msgNb");
-        return salonQuery;
+
+    public Query getQuery(DatabaseReference databaseRef) {
+        return databaseRef.child("saloons").orderByChild("msgNb");
     }
 
-    public void displayAddingSaloonDialog(){
+    public void displayAddingSaloonDialog() {
         final Dialog dialog = new Dialog(this);
 
         dialog.setContentView(R.layout.add_saloon);
@@ -109,7 +115,7 @@ public class MainActivity extends BaseActivity {
         dialog.findViewById(R.id.addSaloon).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                validate(0,nameDialog.getText().toString(),mAuth.getCurrentUser().getUid(),hintDialog.getText().toString());
+                validate();
                 dialog.dismiss();
             }
         });
@@ -122,7 +128,8 @@ public class MainActivity extends BaseActivity {
         });
         dialog.show();
     }
-    public void validate(int msgNb, String name, String authorId, String hint){
+
+    public void validate() {
         nameDialog.setError(null);
         hintDialog.setError(null);
 
@@ -140,10 +147,12 @@ public class MainActivity extends BaseActivity {
             cancel = true;
         }
 
-        if (!cancel) writeNewSaloon(msgNb, name,authorId, hint);
+        if (!cancel) writeNewSaloon(nameView, hintView);
     }
-    private void writeNewSaloon(final int msgNb, final String name, final String authorId, final String hint) {
-        mDatabase.child("users").child(authorId).addListenerForSingleValueEvent(new ValueEventListener() {
+
+    private void writeNewSaloon(final String name, final String hint) {
+        final String authorUid = mAuth.getCurrentUser().getUid();
+        mDatabase.child("users").child(authorUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 hideProgressDialog();
@@ -151,25 +160,26 @@ public class MainActivity extends BaseActivity {
                 User user = dataSnapshot.getValue(User.class);
 
                 if (user != null) {
-                    createNewSaloon(msgNb, name,authorId,user.toString(), hint);
+                    createNewSaloon(name, hint, authorUid, user.getName());
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "getUser:onCancelled", databaseError.toException());
             }
         });
     }
-    public void createNewSaloon(int msgNb, String name, String authorId,String authorName, String hint){
+
+    public void createNewSaloon(String name, String hint, String authorId, String authorName) {
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
-        String key = mDatabase.child("saloon").push().getKey();
-        Saloon post = new Saloon(msgNb, name, authorId, authorName, hint);
+        String key = mDatabase.child("saloons").push().getKey();
+        Saloon post = new Saloon(0, name, authorId, authorName, hint);
         Map<String, Object> postValues = post.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/saloons/" + key, postValues);
-        //childUpdates.put("/user-posts/" + id + "/" + key, postValues);
 
         mDatabase.updateChildren(childUpdates);
     }

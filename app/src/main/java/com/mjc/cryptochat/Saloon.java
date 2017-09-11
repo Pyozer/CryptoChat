@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class Saloon {
 
-    private int messageNumber;
+    private int msgNb;
     private String name;
     private String authorId;
     private String authorName;
@@ -19,9 +19,9 @@ public class Saloon {
 
     public Saloon() {}
 
-    public Saloon(int messageNumber, String name, String authorId, String authorName, String hint){
+    public Saloon(int msgNb, String name, String authorId, String authorName, String hint){
         super();
-        this.messageNumber = messageNumber;
+        this.msgNb = msgNb;
         this.name = name;
         this.authorId = authorId;
         this.authorName = authorName;
@@ -52,12 +52,12 @@ public class Saloon {
         this.authorName = authorName;
     }
 
-    public int getMessageNumber() {
-        return messageNumber;
+    public int getMsgNb() {
+        return msgNb;
     }
 
-    public void setMessageNumber(int messageNumber) {
-        this.messageNumber = messageNumber;
+    public void setMsgNb(int msgNb) {
+        this.msgNb = msgNb;
     }
 
     public String getHint() {
@@ -71,7 +71,7 @@ public class Saloon {
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("msgNb", messageNumber);
+        result.put("msgNb", msgNb);
         result.put("authorId", authorId);
         result.put("authorName", authorName);
         result.put("name", name);
