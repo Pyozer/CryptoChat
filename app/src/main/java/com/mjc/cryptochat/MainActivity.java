@@ -95,7 +95,7 @@ public class MainActivity extends BaseActivity {
         mSaloonList.setAdapter(mAdapter);
     }
     public Query getQuery(DatabaseReference databaseRef){
-        Query salonQuery = databaseRef.child("saloons").orderByChild("nbMsg");
+        Query salonQuery = databaseRef.child("saloons").orderByChild("msgNb");
         return salonQuery;
     }
 
