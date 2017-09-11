@@ -23,6 +23,6 @@ public class SaloonViewHolder extends RecyclerView.ViewHolder {
 
     public void bindToPost(Saloon saloon) {
         titleView.setText(saloon.getName());
-        authorView.setText("By "+saloon.getHint());
+        authorView.setText("By "+saloon.getAuthorName());
     }
 }
