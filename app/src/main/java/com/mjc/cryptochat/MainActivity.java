@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -26,19 +26,24 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
 
+    //Variables used by the UI
     private RecyclerView mSaloonList;
-    private List<Saloon> saloons = new ArrayList<>();
+
+    private TextView nameDialog;
+    private TextView hintDialog;
+
+    //Variables used for the database
     private DatabaseReference mDatabase;
     private FirebaseRecyclerAdapter<Saloon, MainActivity.SaloonViewHolder> mAdapter;
-    private Snackbar mSnackbar;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +95,7 @@ public class MainActivity extends BaseActivity {
         mSaloonList.setAdapter(mAdapter);
     }
     public Query getQuery(DatabaseReference databaseRef){
-        Query salonQuery = databaseRef.child("salons").orderByChild("nbMsg");
+        Query salonQuery = databaseRef.child("saloons").orderByChild("nbMsg");
         return salonQuery;
     }
 
@@ -100,13 +105,13 @@ public class MainActivity extends BaseActivity {
         dialog.setContentView(R.layout.add_saloon);
         dialog.setTitle("Add a saloon");
 
-        final TextView name = dialog.findViewById(R.id.saloonName);
-        final TextView hint = dialog.findViewById(R.id.saloonHint);
+        nameDialog = dialog.findViewById(R.id.saloonName);
+        hintDialog = dialog.findViewById(R.id.saloonHint);
 
         dialog.findViewById(R.id.addSaloon).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                validate(0,name.getText().toString(),mAuth.getCurrentUser().getUid(),hint.getText().toString());
+                validate(0,nameDialog.getText().toString(),mAuth.getCurrentUser().getUid(),hintDialog.getText().toString());
                 dialog.dismiss();
             }
         });
@@ -120,7 +125,24 @@ public class MainActivity extends BaseActivity {
         dialog.show();
     }
     public void validate(int msgNb, String name, String authorId, String hint){
-        writeNewSaloon(msgNb, name,authorId, hint);
+        nameDialog.setError(null);
+        hintDialog.setError(null);
+
+        String nameView = nameDialog.getText().toString().trim();
+        String hintView = hintDialog.getText().toString().trim();
+
+        boolean cancel = false;
+
+        if (TextUtils.isEmpty(nameView)) {
+            nameDialog.setError(getString(R.string.error_field_required));
+            cancel = true;
+        }
+        if (TextUtils.isEmpty(hintView)) {
+            hintDialog.setError(getString(R.string.error_field_required));
+            cancel = true;
+        }
+
+        if (!cancel) writeNewSaloon(msgNb, name,authorId, hint);
     }
     private void writeNewSaloon(final int msgNb, final String name, final String authorId, final String hint) {
         mDatabase.child("users").child(authorId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -198,6 +220,7 @@ public class MainActivity extends BaseActivity {
 
             titleView = (TextView) itemView.findViewById(R.id.saloonTileName);
             authorView = (TextView) itemView.findViewById(R.id.saloonTileAuthor);
+
         }
 
         public void bindToPost(Saloon saloon, View.OnClickListener starClickListener) {
