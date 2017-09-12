@@ -39,7 +39,6 @@
     <string name="hint_text">Hint to find the saloon\'s security key</string>
     <string name="enter_msg">Enter your message</string>
     <string name="info">Info</string>
-    <string name="by">By </string>
     <string name="send">Send</string>
 
 </resources>

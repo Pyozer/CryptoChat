@@ -24,7 +24,7 @@ public class SaloonViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindToPost(Saloon saloon) {
-        String author = R.string.by+saloon.getAuthorName();
+        String author = "By "+saloon.getAuthorName();
         titleView.setText(saloon.getName());
         authorView.setText(author);
         msgNbView.setText(String.valueOf(saloon.getMsgNb()));
