@@ -13,6 +13,7 @@ public class Message {
     private String authorName;
     private int time;
 
+    public Message(){}
     public Message(String authorId, String authorName, String text){
         super();
         this.authorId = authorId;

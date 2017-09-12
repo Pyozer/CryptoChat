@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,12 +35,13 @@ public class ChatActivity extends BaseActivity {
 
     private String postKey;
 
-
     private DatabaseReference mDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        super.redirectToLogin = true; // On spécifie qu'il faut être connecté pour accéder ici
 
         Bundle extras = getIntent().getExtras();
         postKey = extras.getString(EXTRA_POST_KEY);
@@ -54,7 +57,7 @@ public class ChatActivity extends BaseActivity {
         sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //writeNewMessage(inputMessage.getText().toString());
+                writeNewMessage(inputMessage.getText().toString());
             }
         });
 
@@ -90,7 +93,7 @@ public class ChatActivity extends BaseActivity {
 
     }
     public Query getQuery(DatabaseReference databaseRef) {
-        return databaseRef.child("saloons").child(postKey).child("messages");
+        return databaseRef.child("saloons").child(postKey).child("messages").orderByChild("timestamp");
     }
 
     private void writeNewMessage(final String text) {
@@ -124,7 +127,7 @@ public class ChatActivity extends BaseActivity {
         msgValues.put("timestamp", ServerValue.TIMESTAMP);
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/saloons/messages/" + key, msgValues);
+        childUpdates.put("/saloons/"+postKey+"/messages/" + key, msgValues);
 
         mDatabase.updateChildren(childUpdates);
     }
