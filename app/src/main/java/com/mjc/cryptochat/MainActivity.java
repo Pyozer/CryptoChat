@@ -93,6 +93,7 @@ public class MainActivity extends BaseActivity {
                         intent.putExtra(ChatActivity.EXTRA_POST_KEY, postKey);
                         intent.putExtra("saloonName",saloon.getName());
                         startActivity(intent);
+                        Log.e(TAG, postKey);
                     }
                 });
 

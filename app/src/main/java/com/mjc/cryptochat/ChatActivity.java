@@ -6,16 +6,25 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 
-public class ChatActivity extends AppCompatActivity {
+import java.util.HashMap;
+import java.util.Map;
+
+public class ChatActivity extends BaseActivity {
+    private static final String TAG = "ChatActivity";
     public static final String EXTRA_POST_KEY = "post_key";
     private Button sendMessage;
     private RecyclerView messageList;
@@ -41,10 +50,11 @@ public class ChatActivity extends AppCompatActivity {
         messageList = findViewById(R.id.messageList);
         inputMessage = findViewById(R.id.inputMessage);
 
+
         sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDatabase.child("saloons").child(postKey).child("messages").setValue(inputMessage.getText());
+                //writeNewMessage(inputMessage.getText().toString());
             }
         });
 
@@ -56,7 +66,6 @@ public class ChatActivity extends AppCompatActivity {
         mManager.setReverseLayout(true);
         mManager.setStackFromEnd(true);
         messageList.setLayoutManager(mManager);
-
 
 
         Query postsQuery = getQuery(mDatabase);
@@ -82,5 +91,41 @@ public class ChatActivity extends AppCompatActivity {
     }
     public Query getQuery(DatabaseReference databaseRef) {
         return databaseRef.child("saloons").child(postKey).child("messages");
+    }
+
+    private void writeNewMessage(final String text) {
+        final String authorUid = mAuth.getCurrentUser().getUid();
+        mDatabase.child("users").child(authorUid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                hideProgressDialog();
+                // Get user value
+                User user = dataSnapshot.getValue(User.class);
+
+                if (user != null) {
+                    createNewMessage(authorUid, user.getName(),text);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                showSnackbar("Utilisateur inconnu, reconnectez-vous.");
+            }
+        });
+
+
+    }
+    public void createNewMessage(String userId, String userName, String text){
+        String key = mDatabase.child("saloons").child(postKey).child("messages").push().getKey();
+        Message msg = new Message(userId, userName, text);
+
+        Map<String, Object> msgValues = msg.toMap();
+        msgValues.put("timestamp", ServerValue.TIMESTAMP);
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/saloons/messages/" + key, msgValues);
+
+        mDatabase.updateChildren(childUpdates);
     }
 }
