@@ -79,7 +79,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void onAuthSuccess(FirebaseUser user) {
-        Log.e("BaseActivity","HERE !!!!!!!!!!!!!");
         if (user != null) {
             // Go to MainActivity
             startActivity(new Intent(getApplicationContext(), MainActivity.class));

@@ -11,18 +11,21 @@ import android.widget.TextView;
 
 public class SaloonViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView titleView;
-    public TextView authorView;
+    private TextView titleView;
+    private TextView authorView;
+    private TextView msgNbView;
 
     public SaloonViewHolder(View itemView) {
         super(itemView);
 
-        titleView = (TextView) itemView.findViewById(R.id.saloonTileName);
-        authorView = (TextView) itemView.findViewById(R.id.saloonTileAuthor);
+        titleView = itemView.findViewById(R.id.saloonTileName);
+        authorView = itemView.findViewById(R.id.saloonTileAuthor);
+        msgNbView = itemView.findViewById(R.id.saloonMsgNb);
     }
 
     public void bindToPost(Saloon saloon) {
         titleView.setText(saloon.getName());
         authorView.setText("By "+saloon.getAuthorName());
+        msgNbView.setText(String.valueOf(saloon.getMsgNb()));
     }
 }

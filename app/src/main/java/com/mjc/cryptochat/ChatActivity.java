@@ -36,6 +36,8 @@ public class ChatActivity extends BaseActivity {
     private String postKey;
 
     private DatabaseReference mDatabase;
+
+    private  Saloon saloon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +55,21 @@ public class ChatActivity extends BaseActivity {
         messageList = findViewById(R.id.messageList);
         inputMessage = findViewById(R.id.inputMessage);
 
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("saloons/"+postKey);
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                saloon = dataSnapshot.getValue(Saloon.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+
 
         sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +83,7 @@ public class ChatActivity extends BaseActivity {
         messageList.setItemAnimator(new DefaultItemAnimator());
         messageList.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         LinearLayoutManager mManager = new LinearLayoutManager(ChatActivity.this);
-        mManager.setReverseLayout(true);
+        mManager.setReverseLayout(false);
         mManager.setStackFromEnd(true);
         messageList.setLayoutManager(mManager);
 
@@ -120,6 +137,9 @@ public class ChatActivity extends BaseActivity {
 
     }
     public void createNewMessage(String userId, String userName, String text){
+
+        mDatabase.child("saloons").child(postKey).child("msgNb").setValue(saloon.getMsgNb()+1);
+
         String key = mDatabase.child("saloons").child(postKey).child("messages").push().getKey();
         Message msg = new Message(userId, userName, text);
 
