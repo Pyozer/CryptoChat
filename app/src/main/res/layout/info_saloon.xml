@@ -8,39 +8,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"/>
-
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <EditText
             android:id="@+id/supposedSaloonHint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Supposed hint"
+            android:hint="@string/supposed_hint"
             android:inputType="text" />
-
     </android.support.design.widget.TextInputLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <Button
             android:id="@+id/cancel_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:text="Cancel"/>
+            android:text="@string/cancel"/>
         <Button
             android:id="@+id/validate_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toStartOf="@id/cancel_action"
-            android:text="Validate"/>
+            android:text="@string/validate"/>
     </RelativeLayout>
-
 
 </LinearLayout>

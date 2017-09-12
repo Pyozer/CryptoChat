@@ -22,6 +22,9 @@
     <string name="start_button">Start</string>
     <string name="register_button">Register</string>
     <string name="back_button">Back</string>
+    <string name="validate">Validate</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
 
     <!-- LABELS -->
     <string name="mail_address">Mail address</string>
@@ -31,5 +34,12 @@
     <string name="unknown_error">Unknown error</string>
     <string name="no_internet_connection">No internet connection.</string>
     <string name="sign_in_cancelled">Sign-in cancelled</string>
+    <string name="supposed_hint">Supposed hint</string>
+    <string name="saloon_name">Name of the saloon</string>
+    <string name="hint_text">Hint to find the saloon\'s security key</string>
+    <string name="enter_msg">Enter your message</string>
+    <string name="info">Info</string>
+    <string name="by">By </string>
+    <string name="send">Send</string>
 
 </resources>

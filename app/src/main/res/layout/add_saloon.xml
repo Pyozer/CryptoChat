@@ -6,47 +6,42 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <EditText
             android:id="@+id/saloonName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name of the saloon"
+            android:hint="@string/saloon_name"
             android:inputType="text" />
-
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <EditText
             android:id="@+id/saloonHint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Hint to find the saloon's security key"
+            android:hint="@string/hint_text"
             android:inputType="text" />
-
     </android.support.design.widget.TextInputLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <Button
             android:id="@+id/cancelSaloon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:text="Cancel"/>
+            android:text="@string/cancel"/>
         <Button
             android:id="@+id/addSaloon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toStartOf="@+id/cancelSaloon"
-            android:text="Add"/>
+            android:text="@string/add"/>
     </RelativeLayout>
 
 </LinearLayout>
