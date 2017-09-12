@@ -77,6 +77,7 @@ public class ChatActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 writeNewMessage(inputMessage.getText().toString());
+                inputMessage.setText("");
             }
         });
 

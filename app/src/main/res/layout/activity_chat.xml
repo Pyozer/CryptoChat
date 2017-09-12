@@ -5,15 +5,8 @@
     android:layout_height="match_parent"
     tools:context="com.mjc.cryptochat.ChatActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/messageList"
-        android:scrollbars="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"/>
     <LinearLayout
+        android:id="@+id/activity_chat_linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -33,5 +26,15 @@
             android:layout_weight="0.15"
             android:text="@string/send"/>
     </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/messageList"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toStartOf="@id/activity_chat_linear"/>
 
 </RelativeLayout>
