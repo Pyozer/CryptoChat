@@ -16,8 +16,6 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -88,12 +86,10 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         // Launch PostDetailActivity
-                        Log.e(TAG, postKey);
                         Intent intent = new Intent(MainActivity.this, ChatActivity.class);
                         intent.putExtra(ChatActivity.EXTRA_POST_KEY, postKey);
                         intent.putExtra("saloonName",saloon.getName());
                         startActivity(intent);
-                        Log.e(TAG, postKey);
                     }
                 });
 
