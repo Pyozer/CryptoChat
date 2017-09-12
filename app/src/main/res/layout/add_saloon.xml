@@ -29,21 +29,24 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <Button
-            android:id="@+id/addSaloon"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Add"/>
+        android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/cancelSaloon"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
             android:text="Cancel"/>
-    </LinearLayout>
+        <Button
+            android:id="@+id/addSaloon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/cancelSaloon"
+            android:text="Add"/>
+    </RelativeLayout>
 
 </LinearLayout>

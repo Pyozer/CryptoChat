@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.AuthUI;
@@ -108,6 +109,8 @@ public class MainActivity extends BaseActivity {
 
         dialog.setContentView(R.layout.add_saloon);
         dialog.setTitle("Add a saloon");
+
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
         nameDialog = dialog.findViewById(R.id.saloonName);
         hintDialog = dialog.findViewById(R.id.saloonHint);

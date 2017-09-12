@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -173,11 +174,20 @@ public class ChatActivity extends BaseActivity {
             dialog.setContentView(R.layout.info_saloon);
             dialog.setTitle("Saloon's infos");
 
+            dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
             TextView saloonHint = dialog.findViewById(R.id.saloonHint);
             TextView supposedSaloonHint = dialog.findViewById(R.id.supposedSaloonHint);
 
             saloonHint.setText(saloon.getHint());
 
+            dialog.findViewById(R.id.validate_action).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Save the hint
+                    dialog.dismiss();
+                }
+            });
 
             dialog.findViewById(R.id.cancel_action).setOnClickListener(new View.OnClickListener() {
                 @Override
