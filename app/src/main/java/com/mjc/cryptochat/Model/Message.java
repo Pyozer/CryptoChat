@@ -1,4 +1,4 @@
-package com.mjc.cryptochat;
+package com.mjc.cryptochat.Model;
 
 import java.util.HashMap;
 import java.util.Map;

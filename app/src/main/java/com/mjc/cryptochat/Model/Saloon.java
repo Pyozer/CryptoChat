@@ -1,4 +1,4 @@
-package com.mjc.cryptochat;
+package com.mjc.cryptochat.Model;
 
 import com.google.firebase.database.Exclude;
 

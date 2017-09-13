@@ -23,6 +23,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.mjc.cryptochat.Model.Message;
+import com.mjc.cryptochat.Model.Saloon;
+import com.mjc.cryptochat.Model.User;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +42,7 @@ public class ChatActivity extends BaseActivity {
 
     private DatabaseReference mDatabase;
 
-    private  Saloon saloon;
+    private Saloon saloon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
