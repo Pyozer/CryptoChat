@@ -1,40 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.mjc.cryptochat.ChatActivity">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/messageList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="100"
+        android:divider="@null"
+        android:scrollbars="vertical" />
+
     <LinearLayout
-        android:id="@+id/activity_chat_linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true">
+        android:orientation="horizontal">
+
         <EditText
             android:id="@+id/inputMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.85"
-            android:hint="@string/enter_msg"/>
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="100"
+            android:hint="@string/enter_msg"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@null"/>
 
         <Button
             android:id="@+id/sendMessage"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.15"
-            android:text="@string/send"/>
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:drawableStart="@drawable/ic_send_white_24dp"
+            android:textColor="@android:color/white" />
+
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/messageList"
-        android:scrollbars="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_toStartOf="@id/activity_chat_linear"/>
-
-</RelativeLayout>
+</LinearLayout>
