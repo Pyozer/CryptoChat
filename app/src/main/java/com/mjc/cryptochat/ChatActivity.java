@@ -2,10 +2,11 @@ package com.mjc.cryptochat;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,6 +71,20 @@ public class ChatActivity extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 saloon = dataSnapshot.getValue(Saloon.class);
+
+                if (messageList.getScrollState() != 0) {
+                    Snackbar mySnackbar = Snackbar.make(findViewById(android.R.id.content),
+                            R.string.new_message, Snackbar.LENGTH_LONG);
+                    mySnackbar.setAction(R.string.see_new_message, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            messageList.scrollToPosition(mAdapter.getItemCount() - 1);
+                        }
+                    });
+                    mySnackbar.show();
+                } else {
+                    messageList.scrollToPosition(mAdapter.getItemCount() - 1);
+                }
             }
 
             @Override
@@ -78,15 +93,12 @@ public class ChatActivity extends BaseActivity {
             }
         });
 
-
         sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                writeNewMessage(inputMessage.getText().toString());
-                inputMessage.setText("");
+                validForm();
             }
         });
-
 
         messageList.setHasFixedSize(true);
         messageList.setItemAnimator(new DefaultItemAnimator());
@@ -94,7 +106,6 @@ public class ChatActivity extends BaseActivity {
         mManager.setReverseLayout(false);
         mManager.setStackFromEnd(true);
         messageList.setLayoutManager(mManager);
-
 
         Query postsQuery = getQuery(mDatabase);
         mAdapter = new FirebaseRecyclerAdapter<Message, MessageViewHolder>(Message.class, R.layout.message_tile_layout, MessageViewHolder.class, postsQuery) {
@@ -122,6 +133,18 @@ public class ChatActivity extends BaseActivity {
         return databaseRef.child("saloons").child(postKey).child("messages").orderByChild("timestamp");
     }
 
+    private void validForm() {
+        inputMessage.setError(null);
+
+        String text = inputMessage.getText().toString().trim();
+
+        if (TextUtils.isEmpty(text)) {
+            inputMessage.setError(getString(R.string.error_field_required));
+        } else {
+            writeNewMessage(text);
+        }
+    }
+
     private void writeNewMessage(final String text) {
         final String authorUid = mAuth.getCurrentUser().getUid();
         mDatabase.child("users").child(authorUid).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -132,7 +155,7 @@ public class ChatActivity extends BaseActivity {
                 User user = dataSnapshot.getValue(User.class);
 
                 if (user != null) {
-                    createNewMessage(authorUid, user.getName(), text);
+                    createNewMessage(authorUid, user.getUsername(), text);
                 } else {
                     showSnackbar(getString(R.string.unknown_account));
                 }
@@ -141,7 +164,7 @@ public class ChatActivity extends BaseActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-                showSnackbar("Utilisateur inconnu, reconnectez-vous.");
+                showSnackbar(databaseError.toException().getMessage());
             }
         });
 
@@ -163,7 +186,7 @@ public class ChatActivity extends BaseActivity {
 
         mDatabase.updateChildren(childUpdates);
 
-        messageList.scrollToPosition(mAdapter.getItemCount() - 1);
+        inputMessage.setText("");
     }
 
     @Override

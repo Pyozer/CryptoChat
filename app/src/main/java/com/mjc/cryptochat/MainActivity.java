@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends BaseActivity {
+
     private static final String TAG = "MainActivity";
 
     //Variables used for the UI
@@ -42,12 +43,8 @@ public class MainActivity extends BaseActivity {
     private EditText hintDialog;
 
     //Variables used for load the fragment
-    private Fragment mFragment;
     private FragmentManager mFragmentManager;
 
-    //Variables used for the database
-    private DatabaseReference mDatabase;
-    private FirebaseRecyclerAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +56,7 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         mFragmentManager = getSupportFragmentManager();
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -71,11 +66,9 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-
         loadFragment(new MainSaloonFragment());
-
-
     }
+
     private void loadFragment(Fragment fragment) {
         final FragmentTransaction transaction = mFragmentManager.beginTransaction();
         transaction.replace(R.id.main_content, fragment).commit();
@@ -140,7 +133,7 @@ public class MainActivity extends BaseActivity {
                 User user = dataSnapshot.getValue(User.class);
 
                 if (user != null) {
-                    createNewSaloon(name, hint, authorUid, user.getName());
+                    createNewSaloon(name, hint, authorUid, user.getUsername());
                 }
             }
 

@@ -41,5 +41,7 @@
     <string name="enter_msg">Enter your message</string>
     <string name="info">Info</string>
     <string name="send">Send</string>
+    <string name="new_message">New message</string>
+    <string name="see_new_message">See</string>
 
 </resources>
