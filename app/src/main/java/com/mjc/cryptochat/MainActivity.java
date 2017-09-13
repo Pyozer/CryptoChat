@@ -78,7 +78,7 @@ public class MainActivity extends BaseActivity {
     }
     private void loadFragment(Fragment fragment) {
         final FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        transaction.replace(R.id.main_activity_layout, fragment).commit();
+        transaction.replace(R.id.main_content, fragment).commit();
     }
 
     public void displayAddingSaloonDialog() {
