@@ -16,6 +16,7 @@
     <string name="error_field_required">You must fill in this field.</string>.
     <string name="error_short_password">Your password must contain at least %1$d characters</string>
     <string name="error_password_different">Passwords are not the same.</string>
+    <string name="unknown_account">Unknown account. Please reconnect.</string>
 
     <!-- BUTTONS -->
     <string name="login_button">Login</string>

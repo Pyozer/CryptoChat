@@ -31,8 +31,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChatActivity extends BaseActivity {
+
     private static final String TAG = "ChatActivity";
     public static final String EXTRA_POST_KEY = "post_key";
+
     private Button sendMessage;
     private RecyclerView messageList;
     private EditText inputMessage;
@@ -43,6 +45,7 @@ public class ChatActivity extends BaseActivity {
     private DatabaseReference mDatabase;
 
     private Saloon saloon;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +64,7 @@ public class ChatActivity extends BaseActivity {
         inputMessage = findViewById(R.id.inputMessage);
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("saloons/"+postKey);
+        DatabaseReference ref = database.getReference("saloons/" + postKey);
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -87,7 +90,6 @@ public class ChatActivity extends BaseActivity {
 
         messageList.setHasFixedSize(true);
         messageList.setItemAnimator(new DefaultItemAnimator());
-        messageList.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         LinearLayoutManager mManager = new LinearLayoutManager(ChatActivity.this);
         mManager.setReverseLayout(false);
         mManager.setStackFromEnd(true);
@@ -115,6 +117,7 @@ public class ChatActivity extends BaseActivity {
         messageList.setAdapter(mAdapter);
 
     }
+
     public Query getQuery(DatabaseReference databaseRef) {
         return databaseRef.child("saloons").child(postKey).child("messages").orderByChild("timestamp");
     }
@@ -129,7 +132,9 @@ public class ChatActivity extends BaseActivity {
                 User user = dataSnapshot.getValue(User.class);
 
                 if (user != null) {
-                    createNewMessage(authorUid, user.getName(),text);
+                    createNewMessage(authorUid, user.getName(), text);
+                } else {
+                    showSnackbar(getString(R.string.unknown_account));
                 }
             }
 
@@ -142,9 +147,10 @@ public class ChatActivity extends BaseActivity {
 
 
     }
-    public void createNewMessage(String userId, String userName, String text){
 
-        mDatabase.child("saloons").child(postKey).child("msgNb").setValue(saloon.getMsgNb()+1);
+    public void createNewMessage(String userId, String userName, String text) {
+
+        mDatabase.child("saloons").child(postKey).child("msgNb").setValue(saloon.getMsgNb() + 1);
 
         String key = mDatabase.child("saloons").child(postKey).child("messages").push().getKey();
         Message msg = new Message(userId, userName, text);
@@ -153,10 +159,13 @@ public class ChatActivity extends BaseActivity {
         msgValues.put("timestamp", ServerValue.TIMESTAMP);
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/saloons/"+postKey+"/messages/" + key, msgValues);
+        childUpdates.put("/saloons/" + postKey + "/messages/" + key, msgValues);
 
         mDatabase.updateChildren(childUpdates);
+
+        messageList.scrollToPosition(mAdapter.getItemCount() - 1);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
