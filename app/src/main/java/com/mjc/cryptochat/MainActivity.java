@@ -5,10 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,9 +24,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.mjc.cryptochat.Fragment.MainSaloonFragment;
+import com.mjc.cryptochat.Fragment.SaloonFragment;
+import com.mjc.cryptochat.Model.Saloon;
+import com.mjc.cryptochat.Model.User;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,11 +37,13 @@ import java.util.Map;
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
 
-    //Variables used by the UI
-    private RecyclerView mSaloonList;
-
+    //Variables used for the UI
     private EditText nameDialog;
     private EditText hintDialog;
+
+    //Variables used for load the fragment
+    private Fragment mFragment;
+    private FragmentManager mFragmentManager;
 
     //Variables used for the database
     private DatabaseReference mDatabase;
@@ -55,17 +59,9 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.keepSynced(true);
 
-        mSaloonList = findViewById(R.id.saloonList);
-        mSaloonList.setHasFixedSize(true);
-        mSaloonList.setItemAnimator(new DefaultItemAnimator());
-        mSaloonList.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        LinearLayoutManager mManager = new LinearLayoutManager(MainActivity.this);
-        mManager.setReverseLayout(true);
-        mManager.setStackFromEnd(true);
-        mSaloonList.setLayoutManager(mManager);
+        mFragmentManager = getSupportFragmentManager();
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -75,33 +71,14 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        Query postsQuery = getQuery(mDatabase);
-        mAdapter = new FirebaseRecyclerAdapter<Saloon, SaloonViewHolder>(Saloon.class, R.layout.saloon_tile_layout, SaloonViewHolder.class, postsQuery) {
-            @Override
-            protected void populateViewHolder(final SaloonViewHolder viewHolder, final Saloon saloon, final int position) {
-                final DatabaseReference postRef = getRef(position);
 
-                // Set click listener for the whole post view
-                final String postKey = postRef.getKey();
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Launch PostDetailActivity
-                        Intent intent = new Intent(MainActivity.this, ChatActivity.class);
-                        intent.putExtra(ChatActivity.EXTRA_POST_KEY, postKey);
-                        intent.putExtra("saloonName",saloon.getName());
-                        startActivity(intent);
-                    }
-                });
+        loadFragment(new MainSaloonFragment());
 
-                viewHolder.bindToPost(saloon);
-            }
-        };
-        mSaloonList.setAdapter(mAdapter);
+
     }
-
-    public Query getQuery(DatabaseReference databaseRef) {
-        return databaseRef.child("saloons").orderByChild("msgNb");
+    private void loadFragment(Fragment fragment) {
+        final FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        transaction.replace(R.id.main_activity_layout, fragment).commit();
     }
 
     public void displayAddingSaloonDialog() {

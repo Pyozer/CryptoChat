@@ -1,4 +1,4 @@
-package com.mjc.cryptochat;
+package com.mjc.cryptochat.Model;
 
 /**
  * Created by bijou on 10/09/2017.

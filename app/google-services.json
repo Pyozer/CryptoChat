@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "140408921387-al47htg3se408p6bv02p72lkfk5uo405.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mjc.cryptochat",
+            "certificate_hash": "ff805ff3354443e3641c9fe0392ff0f4d98d5d56"
+          }
+        },
+        {
           "client_id": "140408921387-qhq9sca6jfvlkepp0s5kikuqvb87fa5i.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
