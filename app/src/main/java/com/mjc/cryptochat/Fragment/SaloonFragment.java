@@ -18,11 +18,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.mjc.cryptochat.ChatActivity;
-import com.mjc.cryptochat.MainActivity;
+import com.mjc.cryptochat.Activity.ChatActivity;
 import com.mjc.cryptochat.Model.Saloon;
 import com.mjc.cryptochat.R;
-import com.mjc.cryptochat.SaloonViewHolder;
+import com.mjc.cryptochat.ViewHolder.SaloonViewHolder;
 
 /**
  * Created by bijou on 13/09/2017.

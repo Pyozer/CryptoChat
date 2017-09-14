@@ -1,4 +1,4 @@
-package com.mjc.cryptochat;
+package com.mjc.cryptochat.Activity;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.mjc.cryptochat.Fragment.MainSaloonFragment;
 import com.mjc.cryptochat.Model.Saloon;
 import com.mjc.cryptochat.Model.User;
+import com.mjc.cryptochat.R;
 
 import java.util.HashMap;
 import java.util.Map;
