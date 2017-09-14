@@ -218,7 +218,7 @@ public class ChatActivity extends BaseActivity {
 
             int ascii = (int)charArray[i] + (int)hintCharArray[y];
             //If the ASCII nb is superior to 255 then go to the start
-            if(ascii < 255){
+            if(ascii > 255){
                 ascii -= 255;
             }
             finalCharArray[i] = (char)(ascii);

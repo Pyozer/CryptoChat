@@ -44,7 +44,7 @@ public class MessageViewHolder extends RecyclerView.ViewHolder {
             if(i>=hintCharArray.length)y=0;
             int ascii = (int)charArray[i] - (int)hintCharArray[y];
             //If the ASCII nb is superior to 255 then go to the start
-            if(ascii > 0){
+            if(ascii < 0){
                 ascii += 255;
             }
             finalCharArray[i] = (char)(ascii);
