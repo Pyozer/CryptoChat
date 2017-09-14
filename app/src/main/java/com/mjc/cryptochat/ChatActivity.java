@@ -58,12 +58,12 @@ public class ChatActivity extends BaseActivity {
 
         super.redirectToLogin = true; // On spécifie qu'il faut être connecté pour accéder ici
 
-        SharedPreferences sharedPref = ChatActivity.this.getPreferences(Context.MODE_PRIVATE);
-        hint = sharedPref.getString(getString(R.string.hint), "");
-
         Bundle extras = getIntent().getExtras();
         postKey = extras.getString(EXTRA_POST_KEY);
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        SharedPreferences sharedPref = ChatActivity.this.getPreferences(Context.MODE_PRIVATE);
+        hint = sharedPref.getString(postKey, "");
 
         setTitle(extras.getString("saloonName"));
 
@@ -274,8 +274,13 @@ public class ChatActivity extends BaseActivity {
                         hint = supposedHint;
                         SharedPreferences sharedPref = ChatActivity.this.getPreferences(Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString(getString(R.string.hint), hint);
+                        editor.putString(postKey, hint);
                         editor.commit();
+
+                        finish();
+                        startActivity(getIntent());
+
+
                         dialog.dismiss();
                     }
                 }
