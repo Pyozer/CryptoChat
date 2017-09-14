@@ -2,6 +2,7 @@ package com.mjc.cryptochat;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -51,6 +52,8 @@ public class ChatActivity extends BaseActivity {
     private Saloon saloon;
     private static String hint = "";
 
+    private Context context = this.getBaseContext();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,23 +80,28 @@ public class ChatActivity extends BaseActivity {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                saloon = dataSnapshot.getValue(Saloon.class);
+                if(dataSnapshot.exists()){
+                    saloon = dataSnapshot.getValue(Saloon.class);
 
-                if (messageList.getScrollState() != 0) {
-                    Snackbar mySnackbar = Snackbar.make(findViewById(android.R.id.content),
-                            R.string.new_message, Snackbar.LENGTH_LONG);
-                    mySnackbar.setAction(R.string.see_new_message, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            messageList.scrollToPosition(mAdapter.getItemCount() - 1);
-                        }
-                    });
-                    mySnackbar.show();
-                } else {
-                    messageList.scrollToPosition(mAdapter.getItemCount() - 1);
+                    if (messageList.getScrollState() != 0) {
+                        Snackbar mySnackbar = Snackbar.make(findViewById(android.R.id.content),
+                                R.string.new_message, Snackbar.LENGTH_LONG);
+                        mySnackbar.setAction(R.string.see_new_message, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                messageList.scrollToPosition(mAdapter.getItemCount() - 1);
+                            }
+                        });
+                        mySnackbar.show();
+                    } else {
+                        messageList.scrollToPosition(mAdapter.getItemCount() - 1);
+                    }
+                }else{  //The saloon has been removed
+                    Toast.makeText(ChatActivity.this, R.string.saloon_deleted,Toast.LENGTH_LONG).show();
+                    Intent k = new Intent(ChatActivity.this, MainActivity.class);
+                    startActivity(k);
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());

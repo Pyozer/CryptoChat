@@ -1,8 +1,10 @@
 package com.mjc.cryptochat.Fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -83,6 +85,28 @@ public abstract class SaloonFragment extends Fragment {
                         intent.putExtra(ChatActivity.EXTRA_POST_KEY, postKey);
                         intent.putExtra("saloonName",saloon.getName());
                         startActivity(intent);
+                    }
+                });
+
+                viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setMessage("Are you sure to want to remove "+saloon.getName()+" ?")
+                                .setTitle(R.string.remove_saloon);
+                        builder.setPositiveButton(R.string.remove, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                mDatabase.child("saloons").child(postKey).removeValue();
+                            }
+                        });
+                        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                        return false;
                     }
                 });
 

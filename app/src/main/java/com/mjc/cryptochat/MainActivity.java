@@ -18,16 +18,12 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.mjc.cryptochat.Fragment.MainSaloonFragment;
-import com.mjc.cryptochat.Fragment.SaloonFragment;
 import com.mjc.cryptochat.Model.Saloon;
 import com.mjc.cryptochat.Model.User;
 

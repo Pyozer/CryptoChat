@@ -17,6 +17,7 @@
     <string name="error_short_password">Your password must contain at least %1$d characters</string>
     <string name="error_password_different">Passwords are not the same.</string>
     <string name="unknown_account">Unknown account. Please reconnect.</string>
+    <string name="saloon_deleted">You have been kicked, the saloon no longer exist</string>
 
     <!-- BUTTONS -->
     <string name="login_button">Login</string>
@@ -25,6 +26,7 @@
     <string name="back_button">Back</string>
     <string name="validate">Validate</string>
     <string name="add">Add</string>
+    <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
 
     <!-- LABELS -->
@@ -48,7 +50,7 @@
     <!-- TEXT USED FOR TOAST-->
     <string name="need_hint">You must enter a hint to be allowed to post a message</string>
 
-    <!-- TEXT USED FOR SHAREDPREFERENCES-->
-    <string name="hint">hint</string>
+    <!-- TEXT USED FOR DIALOG-->
+    <string name="remove_saloon">Remove selected saloon.</string>
 
 </resources>
