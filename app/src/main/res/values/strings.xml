@@ -44,4 +44,8 @@
     <string name="new_message">New message</string>
     <string name="see_new_message">See</string>
 
+
+    <!-- TEXT USED FOR TOAST-->
+    <string name="need_hint">You must enter a hint to be allowed to post a message</string>
+
 </resources>

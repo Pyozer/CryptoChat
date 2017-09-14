@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DataSnapshot;
@@ -46,6 +47,7 @@ public class ChatActivity extends BaseActivity {
     private DatabaseReference mDatabase;
 
     private Saloon saloon;
+    private static String hint = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +98,11 @@ public class ChatActivity extends BaseActivity {
         sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                validForm();
+                if(!hint.isEmpty()){
+                    validForm();
+                }else{
+                    Toast.makeText(ChatActivity.this, R.string.need_hint, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -137,6 +143,8 @@ public class ChatActivity extends BaseActivity {
         inputMessage.setError(null);
 
         String text = inputMessage.getText().toString().trim();
+
+        text = encryptMsg(text);
 
         if (TextUtils.isEmpty(text)) {
             inputMessage.setError(getString(R.string.error_field_required));
@@ -189,6 +197,32 @@ public class ChatActivity extends BaseActivity {
         inputMessage.setText("");
     }
 
+    public String encryptMsg(String text){
+        char[] hintCharArray = hint.toCharArray();
+        char[] charArray = text.toCharArray();
+        char[] finalCharArray = new char[charArray.length];
+        //int totalAscii = 0;
+
+        //Calculating the total ascii
+//        for(char ch : charArray){
+//            totalAscii += (int) ch;
+//        }
+
+        for(int i = 0; i <charArray.length;i++){
+            int ascii = (int)charArray[i] + (int)hintCharArray[i];
+            //If the ASCII nb is superior to 255 then go to the start
+            if(ascii < 255){
+                ascii -= 255;
+            }
+            finalCharArray[i] = (char)(ascii);
+        }
+        return String.valueOf(finalCharArray);
+    }
+
+    public static String getHint() {
+        return hint;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -212,16 +246,24 @@ public class ChatActivity extends BaseActivity {
 
             dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
-            TextView saloonHint = dialog.findViewById(R.id.saloonHint);
-            TextView supposedSaloonHint = dialog.findViewById(R.id.supposedSaloonHint);
+            final TextView saloonHint = dialog.findViewById(R.id.saloonHint);
+            final EditText supposedSaloonHint = dialog.findViewById(R.id.supposedSaloonHint);
 
             saloonHint.setText(saloon.getHint());
 
             dialog.findViewById(R.id.validate_action).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //Save the hint
-                    dialog.dismiss();
+                    supposedSaloonHint.setError(null);
+
+                    String supposedHint = supposedSaloonHint.getText().toString().trim();
+
+                    if (TextUtils.isEmpty(supposedHint)) {
+                        supposedSaloonHint.setError(getString(R.string.error_field_required));
+                    } else {
+                        hint = supposedHint;
+                        dialog.dismiss();
+                    }
                 }
             });
 

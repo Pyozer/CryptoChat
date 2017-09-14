@@ -23,7 +23,30 @@ public class MessageViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindToPost(Message message) {
-        textView.setText(message.getText());
+        String msg = message.getText();
+        if (!ChatActivity.getHint().isEmpty()) msg = decryptMsg(message.getText());
+        textView.setText(msg);
         authorView.setText("By "+message.getAuthorName());
+    }
+    public String decryptMsg(String text){
+        char[] hintCharArray = ChatActivity.getHint().toCharArray();
+        char[] charArray = text.toCharArray();
+        char[] finalCharArray = new char[charArray.length];
+        //int totalAscii = 0;
+
+        //Calculating the total ascii
+//        for(char ch : charArray){
+//            totalAscii += (int) ch;
+//        }
+
+        for(int i = 0; i <charArray.length;i++){
+            int ascii = (int)charArray[i] - (int)hintCharArray[i];
+            //If the ASCII nb is superior to 255 then go to the start
+            if(ascii > 0){
+                ascii += 255;
+            }
+            finalCharArray[i] = (char)(ascii);
+        }
+        return String.valueOf(finalCharArray);
     }
 }
