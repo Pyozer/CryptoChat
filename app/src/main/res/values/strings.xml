@@ -48,4 +48,7 @@
     <!-- TEXT USED FOR TOAST-->
     <string name="need_hint">You must enter a hint to be allowed to post a message</string>
 
+    <!-- TEXT USED FOR SHAREDPREFERENCES-->
+    <string name="hint">hint</string>
+
 </resources>

@@ -1,6 +1,8 @@
 package com.mjc.cryptochat;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -55,6 +57,9 @@ public class ChatActivity extends BaseActivity {
         setContentView(R.layout.activity_chat);
 
         super.redirectToLogin = true; // On spécifie qu'il faut être connecté pour accéder ici
+
+        SharedPreferences sharedPref = ChatActivity.this.getPreferences(Context.MODE_PRIVATE);
+        hint = sharedPref.getString(getString(R.string.hint), "");
 
         Bundle extras = getIntent().getExtras();
         postKey = extras.getString(EXTRA_POST_KEY);
@@ -207,14 +212,17 @@ public class ChatActivity extends BaseActivity {
 //        for(char ch : charArray){
 //            totalAscii += (int) ch;
 //        }
+        int y = 0;
+        for(int i = 0 ; i < charArray.length ; i++){
+            if(i>=hintCharArray.length)y=0;
 
-        for(int i = 0; i <charArray.length;i++){
-            int ascii = (int)charArray[i] + (int)hintCharArray[i];
+            int ascii = (int)charArray[i] + (int)hintCharArray[y];
             //If the ASCII nb is superior to 255 then go to the start
             if(ascii < 255){
                 ascii -= 255;
             }
             finalCharArray[i] = (char)(ascii);
+            y++;
         }
         return String.valueOf(finalCharArray);
     }
@@ -249,6 +257,8 @@ public class ChatActivity extends BaseActivity {
             final TextView saloonHint = dialog.findViewById(R.id.saloonHint);
             final EditText supposedSaloonHint = dialog.findViewById(R.id.supposedSaloonHint);
 
+            supposedSaloonHint.setText(hint);
+
             saloonHint.setText(saloon.getHint());
 
             dialog.findViewById(R.id.validate_action).setOnClickListener(new View.OnClickListener() {
@@ -262,6 +272,10 @@ public class ChatActivity extends BaseActivity {
                         supposedSaloonHint.setError(getString(R.string.error_field_required));
                     } else {
                         hint = supposedHint;
+                        SharedPreferences sharedPref = ChatActivity.this.getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString(getString(R.string.hint), hint);
+                        editor.commit();
                         dialog.dismiss();
                     }
                 }

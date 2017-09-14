@@ -39,13 +39,16 @@ public class MessageViewHolder extends RecyclerView.ViewHolder {
 //            totalAscii += (int) ch;
 //        }
 
-        for(int i = 0; i <charArray.length;i++){
-            int ascii = (int)charArray[i] - (int)hintCharArray[i];
+        int y = 0;
+        for(int i = 0 ; i < charArray.length ; i++){
+            if(i>=hintCharArray.length)y=0;
+            int ascii = (int)charArray[i] - (int)hintCharArray[y];
             //If the ASCII nb is superior to 255 then go to the start
             if(ascii > 0){
                 ascii += 255;
             }
             finalCharArray[i] = (char)(ascii);
+            y++;
         }
         return String.valueOf(finalCharArray);
     }
