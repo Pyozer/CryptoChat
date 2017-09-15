@@ -10,14 +10,14 @@ import java.util.Map;
 public class Message {
     private String text;
     private String uid;
-    private String authorName;
+    private String auteur;
     private int time;
 
     public Message(){}
-    public Message(String uid, String authorName, String text){
+    public Message(String uid, String auteur, String text){
         super();
         this.uid = uid;
-        this.authorName = authorName;
+        this.auteur = auteur;
         this.text = text;
     }
 
@@ -37,12 +37,12 @@ public class Message {
         this.uid = uid;
     }
 
-    public String getAuthorName() {
-        return this.authorName;
+    public String getAuteur() {
+        return this.auteur;
     }
 
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
+    public void setAuteur(String auteur) {
+        this.auteur = auteur;
     }
 
     public int getTime() {
@@ -55,7 +55,7 @@ public class Message {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("uid", uid);
-        result.put("auteur", authorName);
+        result.put("auteur", auteur);
         result.put("text", text);
 
         return result;

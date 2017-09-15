@@ -1,5 +1,6 @@
 package com.mjc.cryptochat.ViewHolder;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,16 +35,16 @@ public class MessageViewHolder extends RecyclerView.ViewHolder {
 
     public void bindToPost(Message message) {
         if(mAuth.getCurrentUser().getUid().equals(message.getUid())){
-            authorIconOther.setVisibility(View.GONE);
+            authorIconOther.setVisibility(View.INVISIBLE);
             authorIconMines.setVisibility(View.VISIBLE);
         }else{
             authorIconOther.setVisibility(View.VISIBLE);
-            authorIconMines.setVisibility(View.GONE);
+            authorIconMines.setVisibility(View.INVISIBLE);
         }
 
         String msg = message.getText();
         if (!ChatActivity.getHint().isEmpty()) msg = CryptManager.decryptMsg(message.getText());
         textView.setText(msg);
-        authorView.setText("By "+message.getAuthorName());
+        authorView.setText("By "+message.getAuteur());
     }
 }
