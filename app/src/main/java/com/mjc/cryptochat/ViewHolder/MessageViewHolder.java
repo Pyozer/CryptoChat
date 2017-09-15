@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.mjc.cryptochat.Activity.ChatActivity;
+import com.mjc.cryptochat.Activity.MainActivity;
 import com.mjc.cryptochat.Model.Message;
 import com.mjc.cryptochat.R;
 import com.mjc.cryptochat.Utils.CryptManager;
@@ -20,7 +21,7 @@ public class MessageViewHolder extends RecyclerView.ViewHolder {
 
     private TextView textView;
     private TextView authorView;
-    private ImageView authorIconOther,authorIconMines;
+    private ImageView authorIcon;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
 
@@ -29,21 +30,20 @@ public class MessageViewHolder extends RecyclerView.ViewHolder {
 
         textView = (TextView) itemView.findViewById(R.id.messageTileText);
         authorView = (TextView) itemView.findViewById(R.id.messageTileAuthor);
-        authorIconOther = (ImageView) itemView.findViewById(R.id.imageViewOther);
-        authorIconMines = (ImageView) itemView.findViewById(R.id.imageViewMines);
+        authorIcon = (ImageView) itemView.findViewById(R.id.imageView);
     }
 
     public void bindToPost(Message message) {
         if(mAuth.getCurrentUser().getUid().equals(message.getUid())){
-            authorIconOther.setVisibility(View.INVISIBLE);
-            authorIconMines.setVisibility(View.VISIBLE);
+            authorIcon.setVisibility(View.INVISIBLE);
+            textView.setBackground(ContextCompat.getDrawable(MainActivity.getmContext(),R.drawable.badge_chat));
         }else{
-            authorIconOther.setVisibility(View.VISIBLE);
-            authorIconMines.setVisibility(View.INVISIBLE);
+            authorIcon.setVisibility(View.VISIBLE);
+            textView.setBackground(ContextCompat.getDrawable(MainActivity.getmContext(),R.drawable.badge));
         }
 
         String msg = message.getText();
-        if (!ChatActivity.getHint().isEmpty()) msg = CryptManager.decryptMsg(message.getText());
+        if (!ChatActivity.getHint().isEmpty()) msg = CryptManager.decryptMsg(message.getText(), ChatActivity.getHint());
         textView.setText(msg);
         authorView.setText("By "+message.getAuteur());
     }

@@ -10,7 +10,7 @@
     android:paddingTop="10dp">
 
     <ImageView
-        android:id="@+id/imageViewOther"
+        android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="38dp"
         android:layout_weight="0.1"

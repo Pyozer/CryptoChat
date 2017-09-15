@@ -1,6 +1,7 @@
 package com.mjc.cryptochat.Activity;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -42,10 +43,14 @@ public class MainActivity extends BaseActivity {
     //Variables used for load the fragment
     private FragmentManager mFragmentManager;
 
+    private static Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mContext = getApplicationContext();
 
         super.redirectToLogin = true; // On spécifie qu'il faut être connecté pour accéder ici
 
@@ -155,6 +160,10 @@ public class MainActivity extends BaseActivity {
         childUpdates.put("/saloons/" + key, postValues);
 
         mDatabase.updateChildren(childUpdates);
+    }
+
+    public static Context getmContext(){
+        return mContext;
     }
 
     @Override
