@@ -42,7 +42,6 @@ public class MainActivity extends BaseActivity {
     //Variables used for load the fragment
     private FragmentManager mFragmentManager;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,9 +72,7 @@ public class MainActivity extends BaseActivity {
 
     public void displayAddingSaloonDialog() {
         final Dialog dialog = new Dialog(this);
-
         dialog.setContentView(R.layout.add_saloon);
-        dialog.setTitle("Add a saloon");
 
         dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
@@ -85,8 +82,9 @@ public class MainActivity extends BaseActivity {
         dialog.findViewById(R.id.addSaloon).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                validate();
-                dialog.dismiss();
+                if(validate()) {
+                    dialog.dismiss();
+                }
             }
         });
 
@@ -99,7 +97,7 @@ public class MainActivity extends BaseActivity {
         dialog.show();
     }
 
-    public void validate() {
+    public boolean validate() {
         nameDialog.setError(null);
         hintDialog.setError(null);
 
@@ -117,7 +115,11 @@ public class MainActivity extends BaseActivity {
             cancel = true;
         }
 
-        if (!cancel) writeNewSaloon(nameView, hintView);
+        if (!cancel) {
+            writeNewSaloon(nameView, hintView);
+            return true;
+        }
+        return false;
     }
 
     private void writeNewSaloon(final String name, final String hint) {

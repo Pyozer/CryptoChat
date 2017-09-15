@@ -52,5 +52,6 @@
 
     <!-- TEXT USED FOR DIALOG-->
     <string name="remove_saloon">Remove selected saloon.</string>
+    <string name="add_saloon">Add saloon</string>
 
 </resources>

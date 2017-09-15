@@ -4,45 +4,64 @@
     android:layout_height="match_parent"
     android:layout_margin="@dimen/alert_margin">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Base.TextAppearance.AppCompat.Headline"
+        android:textSize="20sp"
+        android:text="@string/add_saloon"
+        android:layout_marginBottom="15dp"/>
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <EditText
             android:id="@+id/saloonName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/saloon_name"
-            android:inputType="text" />
+            android:inputType="text"
+            android:imeOptions="actionNext"/>
+
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <EditText
             android:id="@+id/saloonHint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_text"
-            android:inputType="text" />
+            android:inputType="text"
+            android:imeOptions="actionDone"/>
+
     </android.support.design.widget.TextInputLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <Button
             android:id="@+id/addSaloon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:text="@string/add"/>
+
         <Button
             android:id="@+id/cancelSaloon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toStartOf="@id/addSaloon"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:text="@string/cancel"/>
+
     </RelativeLayout>
 
 </LinearLayout>
