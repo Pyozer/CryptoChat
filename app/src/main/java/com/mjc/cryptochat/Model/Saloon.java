@@ -86,6 +86,7 @@ public class Saloon {
         result.put("authorName", authorName);
         result.put("name", name);
         result.put("hint", hint);
+        result.put("msgDefaultCrypt", msgDefaultCrypt);
 
         return result;
     }
