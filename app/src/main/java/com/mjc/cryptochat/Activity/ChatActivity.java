@@ -32,6 +32,7 @@ import com.mjc.cryptochat.Model.Message;
 import com.mjc.cryptochat.Model.Saloon;
 import com.mjc.cryptochat.Model.User;
 import com.mjc.cryptochat.R;
+import com.mjc.cryptochat.Utils.CryptManager;
 import com.mjc.cryptochat.ViewHolder.MessageViewHolder;
 
 import java.util.HashMap;
@@ -159,7 +160,7 @@ public class ChatActivity extends BaseActivity {
 
         String text = inputMessage.getText().toString().trim();
 
-        text = encryptMsg(text);
+        text = CryptManager.encryptMsg(text);
 
         if (TextUtils.isEmpty(text)) {
             inputMessage.setError(getString(R.string.error_field_required));
@@ -210,31 +211,6 @@ public class ChatActivity extends BaseActivity {
         mDatabase.updateChildren(childUpdates);
 
         inputMessage.setText("");
-    }
-
-    public String encryptMsg(String text){
-        char[] hintCharArray = hint.toCharArray();
-        char[] charArray = text.toCharArray();
-        char[] finalCharArray = new char[charArray.length];
-        //int totalAscii = 0;
-
-        //Calculating the total ascii
-//        for(char ch : charArray){
-//            totalAscii += (int) ch;
-//        }
-        int y = 0;
-        for(int i = 0 ; i < charArray.length ; i++){
-            if(i>=hintCharArray.length)y=0;
-
-            int ascii = (int)charArray[i] + (int)hintCharArray[y];
-            //If the ASCII nb is superior to 255 then go to the start
-            if(ascii > 255){
-                ascii -= 255;
-            }
-            finalCharArray[i] = (char)(ascii);
-            y++;
-        }
-        return String.valueOf(finalCharArray);
     }
 
     public static String getHint() {
