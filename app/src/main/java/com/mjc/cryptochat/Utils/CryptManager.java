@@ -12,8 +12,8 @@ public class CryptManager {
         super();
     }
 
-    public static String encryptMsg(String text){
-        char[] hintCharArray = ChatActivity.getHint().toCharArray();
+    public static String encryptMsg(String text, String key){
+        char[] hintCharArray = key.toCharArray();
         char[] charArray = text.toCharArray();
         char[] finalCharArray = new char[charArray.length];
 
@@ -31,8 +31,8 @@ public class CryptManager {
         }
         return String.valueOf(finalCharArray);
     }
-    public static String decryptMsg(String text){
-        char[] hintCharArray = ChatActivity.getHint().toCharArray();
+    public static String decryptMsg(String text, String key){
+        char[] hintCharArray = key.toCharArray();
         char[] charArray = text.toCharArray();
         char[] finalCharArray = new char[charArray.length];
 

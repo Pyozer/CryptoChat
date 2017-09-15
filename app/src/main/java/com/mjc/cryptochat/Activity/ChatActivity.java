@@ -9,7 +9,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,7 +45,6 @@ public class ChatActivity extends BaseActivity {
     private static final String TAG = "ChatActivity";
     public static final String EXTRA_POST_KEY = "post_key";
 
-    private Button sendMessage;
     private RecyclerView messageList;
     private EditText inputMessage;
     private FirebaseRecyclerAdapter mAdapter;
@@ -54,7 +55,6 @@ public class ChatActivity extends BaseActivity {
 
     private Saloon saloon;
     private static String hint = "";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +72,7 @@ public class ChatActivity extends BaseActivity {
 
         setTitle(extras.getString("saloonName"));
 
-        sendMessage = findViewById(R.id.sendMessage);
+        Button sendMessage = findViewById(R.id.sendMessage);
         messageList = findViewById(R.id.messageList);
         inputMessage = findViewById(R.id.inputMessage);
 
@@ -82,7 +82,7 @@ public class ChatActivity extends BaseActivity {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     saloon = dataSnapshot.getValue(Saloon.class);
 
                     if (messageList.getScrollState() != 0) {
@@ -98,12 +98,13 @@ public class ChatActivity extends BaseActivity {
                     } else {
                         messageList.scrollToPosition(mAdapter.getItemCount() - 1);
                     }
-                }else{  //The saloon has been removed
-                    Toast.makeText(ChatActivity.this, R.string.saloon_deleted,Toast.LENGTH_LONG).show();
+                } else {  //The saloon has been removed
+                    Toast.makeText(ChatActivity.this, R.string.saloon_deleted, Toast.LENGTH_LONG).show();
                     Intent k = new Intent(ChatActivity.this, MainActivity.class);
                     startActivity(k);
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
@@ -113,9 +114,9 @@ public class ChatActivity extends BaseActivity {
         sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!hint.isEmpty()){
+                if (!hint.isEmpty()) {
                     validForm();
-                }else{
+                } else {
                     Toast.makeText(ChatActivity.this, R.string.need_hint, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -132,17 +133,6 @@ public class ChatActivity extends BaseActivity {
         mAdapter = new FirebaseRecyclerAdapter<Message, MessageViewHolder>(Message.class, R.layout.message_tile_layout, MessageViewHolder.class, postsQuery) {
             @Override
             protected void populateViewHolder(final MessageViewHolder viewHolder, final Message message, final int position) {
-                final DatabaseReference postRef = getRef(position);
-
-                // Set click listener for the whole post view
-                final String messagePostKey = postRef.getKey();
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //do somethings
-                    }
-                });
-
                 viewHolder.bindToPost(message);
             }
         };
@@ -159,7 +149,7 @@ public class ChatActivity extends BaseActivity {
 
         String text = inputMessage.getText().toString().trim();
 
-        text = CryptManager.encryptMsg(text);
+        text = CryptManager.encryptMsg(text, hint);
 
         if (TextUtils.isEmpty(text)) {
             inputMessage.setError(getString(R.string.error_field_required));
@@ -232,7 +222,6 @@ public class ChatActivity extends BaseActivity {
             final Dialog dialog = new Dialog(this);
 
             dialog.setContentView(R.layout.info_saloon);
-            dialog.setTitle("Saloon's infos");
 
             dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
@@ -240,6 +229,22 @@ public class ChatActivity extends BaseActivity {
             final EditText supposedSaloonHint = dialog.findViewById(R.id.supposedSaloonHint);
 
             supposedSaloonHint.setText(hint);
+
+            supposedSaloonHint.addTextChangedListener(new TextWatcher() {
+
+                public void afterTextChanged(Editable s) {
+                }
+
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    String hintEnter = supposedSaloonHint.getText().toString();
+                    String msgDefaultDecrypt = CryptManager.decryptMsg(saloon.getMsgDefaultCrypt(), hintEnter);
+
+                    supposedSaloonHint.setText(msgDefaultDecrypt);
+                }
+            });
 
             saloonHint.setText(saloon.getHint());
 
@@ -257,7 +262,7 @@ public class ChatActivity extends BaseActivity {
                         SharedPreferences sharedPref = ChatActivity.this.getPreferences(Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString(postKey, hint);
-                        editor.commit();
+                        editor.apply();
 
                         finish();
                         startActivity(getIntent());

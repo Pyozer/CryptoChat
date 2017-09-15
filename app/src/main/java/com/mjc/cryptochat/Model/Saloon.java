@@ -16,16 +16,18 @@ public class Saloon {
     private String authorId;
     private String authorName;
     private String hint;
+    private String msgDefaultCrypt;
 
     public Saloon() {}
 
-    public Saloon(int msgNb, String name, String authorId, String authorName, String hint){
+    public Saloon(int msgNb, String name, String authorId, String authorName, String hint, String msgDefaultCrypt){
         super();
         this.msgNb = msgNb;
         this.name = name;
         this.authorId = authorId;
         this.authorName = authorName;
         this.hint = hint;
+        this.msgDefaultCrypt = msgDefaultCrypt;
     }
 
     public String getName() {
@@ -66,6 +68,14 @@ public class Saloon {
 
     public void setHint(String hint) {
         this.hint = hint;
+    }
+
+    public String getMsgDefaultCrypt() {
+        return hint;
+    }
+
+    public void setMsgDefaultCrypt(String msgDefaultCrypt) {
+        this.msgDefaultCrypt = msgDefaultCrypt;
     }
 
     @Exclude

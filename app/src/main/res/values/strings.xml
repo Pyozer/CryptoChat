@@ -54,4 +54,6 @@
     <string name="remove_saloon">Remove selected saloon.</string>
     <string name="add_saloon">Add saloon</string>
 
+    <string name="msg_default">You find the key !</string>
+
 </resources>
