@@ -8,6 +8,8 @@
         android:id="@+id/saloonHint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/Base.TextAppearance.AppCompat.Headline"
+        android:textSize="20sp"
         android:layout_marginBottom="15dp"/>
 
     <android.support.design.widget.TextInputLayout
