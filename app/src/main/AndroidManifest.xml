@@ -33,7 +33,9 @@
             android:name=".Activity.RegisterActivity"
             android:parentActivityName=".Activity.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Activity.ChatActivity"></activity>
+        <activity
+            android:name=".Activity.ChatActivity"
+            android:parentActivityName=".Activity.MainActivity"></activity>
     </application>
 
 </manifest>
