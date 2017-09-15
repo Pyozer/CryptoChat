@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.mjc.cryptochat.Activity.ChatActivity;
 import com.mjc.cryptochat.Model.Message;
 import com.mjc.cryptochat.R;
@@ -19,6 +20,7 @@ public class MessageViewHolder extends RecyclerView.ViewHolder {
     private TextView textView;
     private TextView authorView;
     private ImageView authorIconOther,authorIconMines;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
 
     public MessageViewHolder(View itemView) {
@@ -31,7 +33,7 @@ public class MessageViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindToPost(Message message) {
-        if(message.isMine()){
+        if(mAuth.getCurrentUser().getUid().equals(message.getUid())){
             authorIconOther.setVisibility(View.GONE);
             authorIconMines.setVisibility(View.VISIBLE);
         }else{

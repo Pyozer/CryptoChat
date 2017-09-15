@@ -190,16 +190,13 @@ public class ChatActivity extends BaseActivity {
                 showSnackbar(databaseError.toException().getMessage());
             }
         });
-
-
     }
 
     public void createNewMessage(String userId, String userName, String text) {
-
         mDatabase.child("saloons").child(postKey).child("msgNb").setValue(saloon.getMsgNb() + 1);
 
         String key = mDatabase.child("saloons").child(postKey).child("messages").push().getKey();
-        Message msg = new Message(userId, userName, text, mAuth.getCurrentUser().getUid().equals(userId)?true:false);
+        Message msg = new Message(userId, userName, text);
 
         Map<String, Object> msgValues = msg.toMap();
         msgValues.put("timestamp", ServerValue.TIMESTAMP);
