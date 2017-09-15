@@ -13,12 +13,14 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <EditText
             android:id="@+id/supposedSaloonHint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/supposed_hint"
             android:inputType="text" />
+
     </android.support.design.widget.TextInputLayout>
 
     <RelativeLayout
@@ -31,13 +33,16 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:text="@string/validate"/>
+
         <Button
             android:id="@+id/cancel_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toStartOf="@id/validate_action"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:text="@string/cancel"/>
 
     </RelativeLayout>
