@@ -23,6 +23,16 @@
 
     </android.support.design.widget.TextInputLayout>
 
+    <TextView
+        android:id="@+id/messageTemoin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/badge"
+        android:padding="10dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginBottom="13dp"
+        android:textColor="@color/white" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
