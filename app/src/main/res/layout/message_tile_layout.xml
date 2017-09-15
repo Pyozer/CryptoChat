@@ -8,40 +8,49 @@
     android:paddingEnd="@dimen/layout_margin"
     android:paddingTop="5dp">
 
-    <ImageView
-        android:id="@+id/imageViewOther"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:srcCompat="@drawable/ic_face_black_24dp" />
-
-    <ImageView
-        android:id="@+id/imageViewMines"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:srcCompat="@drawable/ic_face_black_24dp" />
-
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/messageTileText"
+        <ImageView
+            android:id="@+id/imageViewOther"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/ic_face_black_24dp"
+            android:layout_weight="0.2" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_weight="0.8" >
+
+            <TextView
+                android:id="@+id/messageTileText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/badge"
+                android:textColor="@color/white"
+                android:padding="10dp"/>
+
+            <TextView
+                android:id="@+id/messageTileAuthor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                style="@style/TextAppearance.AppCompat.Caption" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageViewMines"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@drawable/badge"
-            android:textColor="@color/white"
-            android:padding="10dp"/>
-
-        <TextView
-            android:id="@+id/messageTileAuthor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            style="@style/TextAppearance.AppCompat.Caption" />
+            app:srcCompat="@drawable/ic_face_black_24dp"
+            android:layout_weight="0.2" />
 
     </LinearLayout>
 
