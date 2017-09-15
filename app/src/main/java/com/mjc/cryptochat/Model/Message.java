@@ -12,13 +12,15 @@ public class Message {
     private String authorId;
     private String authorName;
     private int time;
+    private boolean isMine = false;
 
     public Message(){}
-    public Message(String authorId, String authorName, String text){
+    public Message(String authorId, String authorName, String text, boolean isMine){
         super();
         this.authorId = authorId;
         this.authorName = authorName;
         this.text = text;
+        this.isMine = isMine;
     }
 
     public String getText() {
@@ -47,6 +49,14 @@ public class Message {
 
     public int getTime() {
         return time;
+    }
+
+    public boolean isMine() {
+        return isMine;
+    }
+
+    public void setMine(boolean mine) {
+        isMine = mine;
     }
 
     public void setTime(int time) {

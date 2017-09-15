@@ -2,6 +2,7 @@ package com.mjc.cryptochat.ViewHolder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mjc.cryptochat.Activity.ChatActivity;
@@ -17,6 +18,7 @@ public class MessageViewHolder extends RecyclerView.ViewHolder {
 
     private TextView textView;
     private TextView authorView;
+    private ImageView authorIconOther,authorIconMines;
 
 
     public MessageViewHolder(View itemView) {
@@ -24,9 +26,19 @@ public class MessageViewHolder extends RecyclerView.ViewHolder {
 
         textView = (TextView) itemView.findViewById(R.id.messageTileText);
         authorView = (TextView) itemView.findViewById(R.id.messageTileAuthor);
+        authorIconOther = (ImageView) itemView.findViewById(R.id.imageViewOther);
+        authorIconMines = (ImageView) itemView.findViewById(R.id.imageViewMines);
     }
 
     public void bindToPost(Message message) {
+        if(message.isMine()){
+            authorIconOther.setVisibility(View.GONE);
+            authorIconMines.setVisibility(View.VISIBLE);
+        }else{
+            authorIconOther.setVisibility(View.VISIBLE);
+            authorIconMines.setVisibility(View.GONE);
+        }
+
         String msg = message.getText();
         if (!ChatActivity.getHint().isEmpty()) msg = CryptManager.decryptMsg(message.getText());
         textView.setText(msg);

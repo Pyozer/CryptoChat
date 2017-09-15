@@ -55,7 +55,6 @@ public class ChatActivity extends BaseActivity {
     private Saloon saloon;
     private static String hint = "";
 
-    private Context context = this.getBaseContext();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,7 +199,7 @@ public class ChatActivity extends BaseActivity {
         mDatabase.child("saloons").child(postKey).child("msgNb").setValue(saloon.getMsgNb() + 1);
 
         String key = mDatabase.child("saloons").child(postKey).child("messages").push().getKey();
-        Message msg = new Message(userId, userName, text);
+        Message msg = new Message(userId, userName, text, mAuth.getCurrentUser().getUid().equals(userId)?true:false);
 
         Map<String, Object> msgValues = msg.toMap();
         msgValues.put("timestamp", ServerValue.TIMESTAMP);
