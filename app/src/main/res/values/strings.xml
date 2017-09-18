@@ -40,6 +40,7 @@
     <string name="supposed_hint">Supposed hint</string>
     <string name="saloon_name">Name of the saloon</string>
     <string name="hint_text">Hint to find the saloon\'s security key</string>
+    <string name="key_text">The key to crypt the message</string>
     <string name="enter_msg">Enter your message</string>
     <string name="info">Info</string>
     <string name="send">Send</string>

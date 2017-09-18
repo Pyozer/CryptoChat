@@ -28,6 +28,7 @@ import com.mjc.cryptochat.Fragment.MainSaloonFragment;
 import com.mjc.cryptochat.Model.Saloon;
 import com.mjc.cryptochat.Model.User;
 import com.mjc.cryptochat.R;
+import com.mjc.cryptochat.Utils.CryptManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +40,7 @@ public class MainActivity extends BaseActivity {
     //Variables used for the UI
     private EditText nameDialog;
     private EditText hintDialog;
+    private EditText keyDialog;
 
     //Variables used for load the fragment
     private FragmentManager mFragmentManager;
@@ -83,6 +85,7 @@ public class MainActivity extends BaseActivity {
 
         nameDialog = dialog.findViewById(R.id.saloonName);
         hintDialog = dialog.findViewById(R.id.saloonHint);
+        keyDialog = dialog.findViewById(R.id.saloonKey);
 
         dialog.findViewById(R.id.addSaloon).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,9 +108,11 @@ public class MainActivity extends BaseActivity {
     public boolean validate() {
         nameDialog.setError(null);
         hintDialog.setError(null);
+        keyDialog.setError(null);
 
         String nameView = nameDialog.getText().toString().trim();
         String hintView = hintDialog.getText().toString().trim();
+        String keyView = keyDialog.getText().toString().trim();
 
         boolean cancel = false;
 
@@ -119,15 +124,19 @@ public class MainActivity extends BaseActivity {
             hintDialog.setError(getString(R.string.error_field_required));
             cancel = true;
         }
+        if (TextUtils.isEmpty(keyView)) {
+            keyDialog.setError(getString(R.string.error_field_required));
+            cancel = true;
+        }
 
         if (!cancel) {
-            writeNewSaloon(nameView, hintView);
+            writeNewSaloon(nameView, hintView, keyView);
             return true;
         }
         return false;
     }
 
-    private void writeNewSaloon(final String name, final String hint) {
+    private void writeNewSaloon(final String name, final String hint, final String key) {
         final String authorUid = mAuth.getCurrentUser().getUid();
         mDatabase.child("users").child(authorUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -137,7 +146,7 @@ public class MainActivity extends BaseActivity {
                 User user = dataSnapshot.getValue(User.class);
 
                 if (user != null) {
-                    createNewSaloon(name, hint, authorUid, user.getUsername());
+                    createNewSaloon(name, hint, key, authorUid, user.getUsername());
                 }
             }
 
@@ -149,15 +158,16 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    public void createNewSaloon(String name, String hint, String authorId, String authorName) {
+    public void createNewSaloon(String name, String hint, String key, String authorId, String authorName) {
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
-        String key = mDatabase.child("saloons").push().getKey();
-        Saloon post = new Saloon(0, name, authorId, authorName, hint);
+        String salonKey = mDatabase.child("saloons").push().getKey();
+        String msgDefaultCrypt = CryptManager.encryptMsg(getString(R.string.msg_default), key);
+        Saloon post = new Saloon(0, name, authorId, authorName, hint, msgDefaultCrypt);
         Map<String, Object> postValues = post.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/saloons/" + key, postValues);
+        childUpdates.put("/saloons/" + salonKey, postValues);
 
         mDatabase.updateChildren(childUpdates);
     }
