@@ -27,7 +27,8 @@ public class HomeActivity extends BaseActivity {
                         AuthUI.getInstance()
                                 .createSignInIntentBuilder()
                                 .setAvailableProviders(
-                                        Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                        Arrays.asList(
+                                                new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                                                 new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build(),
                                                 new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
                                 .build(),
@@ -56,18 +57,15 @@ public class HomeActivity extends BaseActivity {
                     showSnackbar(R.string.sign_in_cancelled);
                     return;
                 }
-
                 if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                     showSnackbar(R.string.no_internet_connection);
                     return;
                 }
-
                 if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                     showSnackbar(R.string.unknown_error);
                     return;
                 }
             }
-
             showSnackbar(R.string.unknown_sign_in_response);
         }
     }

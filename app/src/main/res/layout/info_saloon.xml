@@ -17,7 +17,7 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/supposedSaloonHint"
+            android:id="@+id/supposedSaloonKey"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/supposed_hint"

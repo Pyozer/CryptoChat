@@ -1,9 +1,7 @@
 package com.mjc.cryptochat.Activity;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,8 +22,6 @@ import android.widget.Toast;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
@@ -35,6 +30,7 @@ import com.mjc.cryptochat.Model.Saloon;
 import com.mjc.cryptochat.Model.User;
 import com.mjc.cryptochat.R;
 import com.mjc.cryptochat.Utils.CryptManager;
+import com.mjc.cryptochat.Utils.PrefManager;
 import com.mjc.cryptochat.ViewHolder.MessageViewHolder;
 
 import java.util.HashMap;
@@ -43,47 +39,51 @@ import java.util.Map;
 public class ChatActivity extends BaseActivity {
 
     private static final String TAG = "ChatActivity";
-    public static final String EXTRA_POST_KEY = "post_key";
+    public static final String EXTRA_SALOON_KEY = "saloon_key";
 
     private RecyclerView messageList;
     private EditText inputMessage;
     private FirebaseRecyclerAdapter mAdapter;
 
-    private String postKey;
-
-    private DatabaseReference mDatabase;
+    private String saloonKey;
 
     private Saloon saloon;
-    private static String hint = "";
+    private static String keySupposed = "";
+
+    private PrefManager prefManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.redirectToLogin = true; // On spécifie qu'il faut être connecté pour accéder ici
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        super.redirectToLogin = true; // On spécifie qu'il faut être connecté pour accéder ici
-
         Bundle extras = getIntent().getExtras();
-        postKey = extras.getString(EXTRA_POST_KEY);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        saloonKey = extras.getString(EXTRA_SALOON_KEY);
 
-        SharedPreferences sharedPref = ChatActivity.this.getPreferences(Context.MODE_PRIVATE);
-        hint = sharedPref.getString(postKey, "");
+        prefManager = new PrefManager(this);
+        keySupposed = prefManager.getSaloonHintSaved(saloonKey);
 
         setTitle(extras.getString("saloonName"));
 
-        Button sendMessage = findViewById(R.id.sendMessage);
+        findViewById(R.id.sendMessage).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!keySupposed.isEmpty()) validForm();
+                else Toast.makeText(ChatActivity.this, R.string.need_hint, Toast.LENGTH_SHORT).show();
+            }
+        });
         messageList = findViewById(R.id.messageList);
         inputMessage = findViewById(R.id.inputMessage);
 
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("saloons/" + postKey);
-
-        ref.addValueEventListener(new ValueEventListener() {
+        showProgressDialog();
+        mDatabase.child("saloons/" + saloonKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    saloon = dataSnapshot.getValue(Saloon.class);
+                hideProgressDialog();
+                Saloon saloonGet = dataSnapshot.getValue(Saloon.class);
+                if (saloonGet != null) {
+                    saloon = saloonGet;
 
                     if (messageList.getScrollState() != 0) {
                         Snackbar mySnackbar = Snackbar.make(findViewById(android.R.id.content),
@@ -100,25 +100,14 @@ public class ChatActivity extends BaseActivity {
                     }
                 } else {  //The saloon has been removed
                     Toast.makeText(ChatActivity.this, R.string.saloon_deleted, Toast.LENGTH_LONG).show();
-                    Intent k = new Intent(ChatActivity.this, MainActivity.class);
-                    startActivity(k);
+                    startActivity(new Intent(ChatActivity.this, MainActivity.class));
+                    finish();
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
-
-        sendMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!hint.isEmpty()) {
-                    validForm();
-                } else {
-                    Toast.makeText(ChatActivity.this, R.string.need_hint, Toast.LENGTH_SHORT).show();
-                }
             }
         });
 
@@ -129,27 +118,21 @@ public class ChatActivity extends BaseActivity {
         mManager.setStackFromEnd(true);
         messageList.setLayoutManager(mManager);
 
-        Query postsQuery = getQuery(mDatabase);
+        Query postsQuery = mDatabase.child("saloons").child(saloonKey).child("messages").orderByChild("timestamp");;
         mAdapter = new FirebaseRecyclerAdapter<Message, MessageViewHolder>(Message.class, R.layout.message_tile_layout, MessageViewHolder.class, postsQuery) {
             @Override
             protected void populateViewHolder(final MessageViewHolder viewHolder, final Message message, final int position) {
-                viewHolder.bindToPost(message);
+                viewHolder.bindToPost(getApplicationContext(), message);
             }
         };
         messageList.setAdapter(mAdapter);
-
-    }
-
-    public Query getQuery(DatabaseReference databaseRef) {
-        return databaseRef.child("saloons").child(postKey).child("messages").orderByChild("timestamp");
     }
 
     private void validForm() {
         inputMessage.setError(null);
 
         String text = inputMessage.getText().toString().trim();
-
-        text = CryptManager.encryptMsg(text, hint);
+        text = CryptManager.encryptMsg(text, keySupposed);
 
         if (TextUtils.isEmpty(text)) {
             inputMessage.setError(getString(R.string.error_field_required));
@@ -159,7 +142,8 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void writeNewMessage(final String text) {
-        final String authorUid = mAuth.getCurrentUser().getUid();
+        showProgressDialog();
+        final String authorUid = getUid();
         mDatabase.child("users").child(authorUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -183,24 +167,24 @@ public class ChatActivity extends BaseActivity {
     }
 
     public void createNewMessage(String userId, String userName, String text) {
-        mDatabase.child("saloons").child(postKey).child("msgNb").setValue(saloon.getMsgNb() + 1);
+        mDatabase.child("saloons").child(saloonKey).child("msgNb").setValue(saloon.getMsgNb() + 1);
 
-        String key = mDatabase.child("saloons").child(postKey).child("messages").push().getKey();
+        String key = mDatabase.child("saloons").child(saloonKey).child("messages").push().getKey();
         Message msg = new Message(userId, userName, text);
 
         Map<String, Object> msgValues = msg.toMap();
         msgValues.put("timestamp", ServerValue.TIMESTAMP);
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/saloons/" + postKey + "/messages/" + key, msgValues);
+        childUpdates.put("/saloons/" + saloonKey + "/messages/" + key, msgValues);
 
         mDatabase.updateChildren(childUpdates);
 
         inputMessage.setText("");
     }
 
-    public static String getHint() {
-        return hint;
+    public static String getKeySupposed() {
+        return keySupposed;
     }
 
     @Override
@@ -226,44 +210,43 @@ public class ChatActivity extends BaseActivity {
             dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
             final TextView saloonHint = dialog.findViewById(R.id.saloonHint);
-            final EditText supposedSaloonHint = dialog.findViewById(R.id.supposedSaloonHint);
-	    final EditText msgTemoinSaloon = dialog.findViewById(R.id.messageTemoin);
+            final EditText supposedSaloonKey = dialog.findViewById(R.id.supposedSaloonKey);
+            final TextView msgTemoinSaloon = dialog.findViewById(R.id.messageTemoin);
 
-            supposedSaloonHint.setText(hint);
+            supposedSaloonKey.setText(keySupposed);
+            msgTemoinSaloon.setText(CryptManager.decryptMsg(saloon.getMsgDefaultCrypt(), keySupposed));
+            saloonHint.setText(saloon.getHint());
 
-            supposedSaloonHint.addTextChangedListener(new TextWatcher() {
+            supposedSaloonKey.addTextChangedListener(new TextWatcher() {
 
-                public void afterTextChanged(Editable s) {}
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    String hintEnter = supposedSaloonHint.getText().toString();
-                    String msgDefaultDecrypt = CryptManager.decryptMsg(saloon.getMsgDefaultCrypt(), hintEnter);
+                public void afterTextChanged(Editable s) {
+                    String keyEnter = supposedSaloonKey.getText().toString();
+                    String msgDefaultDecrypt = CryptManager.decryptMsg(saloon.getMsgDefaultCrypt(), keyEnter);
 
                     msgTemoinSaloon.setText(msgDefaultDecrypt);
                 }
             });
 
-            saloonHint.setText(saloon.getHint());
-
             dialog.findViewById(R.id.validate_action).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    supposedSaloonHint.setError(null);
+                    supposedSaloonKey.setError(null);
 
-                    String supposedHint = supposedSaloonHint.getText().toString().trim();
+                    String supposedHint = supposedSaloonKey.getText().toString().trim();
 
                     if (TextUtils.isEmpty(supposedHint)) {
-                        supposedSaloonHint.setError(getString(R.string.error_field_required));
+                        supposedSaloonKey.setError(getString(R.string.error_field_required));
                     } else {
-                        SharedPreferences sharedPref = ChatActivity.this.getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString(postKey, supposedHint);
-                        editor.apply();
+                        prefManager.saveHintOfSaloon(saloonKey, supposedHint);
 
                         startActivity(getIntent());
-			finish();
+                        finish();
 
                         dialog.dismiss();
                     }

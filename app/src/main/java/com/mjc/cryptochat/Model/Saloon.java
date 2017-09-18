@@ -18,9 +18,10 @@ public class Saloon {
     private String hint;
     private String msgDefaultCrypt;
 
-    public Saloon() {}
+    public Saloon() {
+    }
 
-    public Saloon(int msgNb, String name, String authorId, String authorName, String hint, String msgDefaultCrypt){
+    public Saloon(int msgNb, String name, String authorId, String authorName, String hint, String msgDefaultCrypt) {
         super();
         this.msgNb = msgNb;
         this.name = name;
@@ -71,7 +72,7 @@ public class Saloon {
     }
 
     public String getMsgDefaultCrypt() {
-        return hint;
+        return msgDefaultCrypt;
     }
 
     public void setMsgDefaultCrypt(String msgDefaultCrypt) {

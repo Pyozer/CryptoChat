@@ -75,14 +75,14 @@ public abstract class SaloonFragment extends Fragment {
                 final DatabaseReference postRef = getRef(position);
 
                 // Set click listener for the whole post view
-                final String postKey = postRef.getKey();
+                final String saloonKey = postRef.getKey();
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         // Launch PostDetailActivity
                         Intent intent = new Intent(getActivity(), ChatActivity.class);
-                        intent.putExtra(ChatActivity.EXTRA_POST_KEY, postKey);
-                        intent.putExtra("saloonName",saloon.getName());
+                        intent.putExtra(ChatActivity.EXTRA_SALOON_KEY, saloonKey);
+                        intent.putExtra("saloonName", saloon.getName());
                         startActivity(intent);
                     }
                 });
@@ -91,11 +91,11 @@ public abstract class SaloonFragment extends Fragment {
                     @Override
                     public boolean onLongClick(View view) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setMessage("Are you sure to want to remove "+saloon.getName()+" ?")
+                        builder.setMessage("Are you sure to want to remove " + saloon.getName() + " ?")
                                 .setTitle(R.string.remove_saloon);
                         builder.setPositiveButton(R.string.remove, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                mDatabase.child("saloons").child(postKey).removeValue();
+                                mDatabase.child("saloons").child(saloonKey).removeValue();
                             }
                         });
                         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -113,11 +113,6 @@ public abstract class SaloonFragment extends Fragment {
             }
         };
         mSaloonList.setAdapter(mAdapter);
-    }
-
-
-    public String getUid() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     public abstract Query getQuery(DatabaseReference databaseReference);

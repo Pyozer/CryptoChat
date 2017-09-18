@@ -2,6 +2,7 @@ package com.mjc.cryptochat.Activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,8 +28,8 @@ public class BaseActivity extends AppCompatActivity {
     public DatabaseReference mDatabase;
 
     @Override
-    public void onStart() {
-        super.onStart();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         // Check if user is signed in (non-null) and update UI accordingly.
         if(!isInitialized) {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -90,6 +91,10 @@ public class BaseActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
+    }
+
+    public String getUid() {
+        return mAuth.getCurrentUser().getUid();
     }
 
     @Override

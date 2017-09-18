@@ -1,5 +1,7 @@
 package com.mjc.cryptochat.Utils;
 
+import android.text.TextUtils;
+
 import com.mjc.cryptochat.Activity.ChatActivity;
 
 /**
@@ -13,6 +15,9 @@ public class CryptManager {
     }
 
     public static String encryptMsg(String text, String key){
+        if(TextUtils.isEmpty(text) || TextUtils.isEmpty(key))
+            return "";
+
         char[] hintCharArray = key.toCharArray();
         char[] charArray = text.toCharArray();
         char[] finalCharArray = new char[charArray.length];
@@ -32,6 +37,9 @@ public class CryptManager {
         return String.valueOf(finalCharArray);
     }
     public static String decryptMsg(String text, String key){
+        if(TextUtils.isEmpty(text) || TextUtils.isEmpty(key))
+            return "";
+
         char[] hintCharArray = key.toCharArray();
         char[] charArray = text.toCharArray();
         char[] finalCharArray = new char[charArray.length];

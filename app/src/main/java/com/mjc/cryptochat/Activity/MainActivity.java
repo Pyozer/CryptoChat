@@ -1,7 +1,6 @@
 package com.mjc.cryptochat.Activity;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -45,23 +44,19 @@ public class MainActivity extends BaseActivity {
     //Variables used for load the fragment
     private FragmentManager mFragmentManager;
 
-    private static Context mContext;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.redirectToLogin = true; // On spécifie qu'il faut être connecté pour accéder ici
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mContext = getApplicationContext();
-
-        super.redirectToLogin = true; // On spécifie qu'il faut être connecté pour accéder ici
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mFragmentManager = getSupportFragmentManager();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,7 +85,7 @@ public class MainActivity extends BaseActivity {
         dialog.findViewById(R.id.addSaloon).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(validate()) {
+                if (validate()) {
                     dialog.dismiss();
                 }
             }
@@ -137,7 +132,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void writeNewSaloon(final String name, final String hint, final String key) {
-        final String authorUid = mAuth.getCurrentUser().getUid();
+        final String authorUid = getUid();
         mDatabase.child("users").child(authorUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -170,10 +165,6 @@ public class MainActivity extends BaseActivity {
         childUpdates.put("/saloons/" + salonKey, postValues);
 
         mDatabase.updateChildren(childUpdates);
-    }
-
-    public static Context getmContext(){
-        return mContext;
     }
 
     @Override
