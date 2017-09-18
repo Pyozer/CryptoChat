@@ -227,22 +227,21 @@ public class ChatActivity extends BaseActivity {
 
             final TextView saloonHint = dialog.findViewById(R.id.saloonHint);
             final EditText supposedSaloonHint = dialog.findViewById(R.id.supposedSaloonHint);
+	    final EditText msgTemoinSaloon = dialog.findViewById(R.id.messageTemoin);
 
             supposedSaloonHint.setText(hint);
 
             supposedSaloonHint.addTextChangedListener(new TextWatcher() {
 
-                public void afterTextChanged(Editable s) {
-                }
+                public void afterTextChanged(Editable s) {}
 
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     String hintEnter = supposedSaloonHint.getText().toString();
                     String msgDefaultDecrypt = CryptManager.decryptMsg(saloon.getMsgDefaultCrypt(), hintEnter);
 
-                    supposedSaloonHint.setText(msgDefaultDecrypt);
+                    msgTemoinSaloon.setText(msgDefaultDecrypt);
                 }
             });
 
@@ -258,15 +257,13 @@ public class ChatActivity extends BaseActivity {
                     if (TextUtils.isEmpty(supposedHint)) {
                         supposedSaloonHint.setError(getString(R.string.error_field_required));
                     } else {
-                        hint = supposedHint;
                         SharedPreferences sharedPref = ChatActivity.this.getPreferences(Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString(postKey, hint);
+                        editor.putString(postKey, supposedHint);
                         editor.apply();
 
-                        finish();
                         startActivity(getIntent());
-
+			finish();
 
                         dialog.dismiss();
                     }
