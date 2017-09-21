@@ -28,6 +28,7 @@ import com.mjc.cryptochat.Model.Saloon;
 import com.mjc.cryptochat.Model.User;
 import com.mjc.cryptochat.R;
 import com.mjc.cryptochat.Utils.CryptManager;
+import com.mjc.cryptochat.Utils.PrefManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,12 +45,16 @@ public class MainActivity extends BaseActivity {
     //Variables used for load the fragment
     private FragmentManager mFragmentManager;
 
+    private PrefManager prefManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.redirectToLogin = true; // On spécifie qu'il faut être connecté pour accéder ici
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        prefManager = new PrefManager(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -163,6 +168,9 @@ public class MainActivity extends BaseActivity {
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/saloons/" + salonKey, postValues);
+
+        //Save automatically hint for the saloon.
+        prefManager.saveHintOfSaloon(salonKey, keyDialog.getText().toString().trim());
 
         mDatabase.updateChildren(childUpdates);
     }
