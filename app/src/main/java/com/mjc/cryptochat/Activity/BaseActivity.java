@@ -129,6 +129,7 @@ public class BaseActivity extends AppCompatActivity {
         dialog.setContentView(R.layout.setup_username);
 
         dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.setCancelable(false);
 
         final EditText username = dialog.findViewById(R.id.username);
 
@@ -146,12 +147,6 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
 
-        dialog.findViewById(R.id.cancelUsername).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
         dialog.show();
     }
 
