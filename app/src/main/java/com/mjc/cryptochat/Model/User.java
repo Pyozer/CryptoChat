@@ -5,25 +5,14 @@ package com.mjc.cryptochat.Model;
  */
 
 public class User {
-
-    private String email;
     private String username;
 
     public User() {
         super();
     }
 
-    public User(String email, String username) {
-        this.email = email;
+    public User(String username) {
         this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getUsername() {

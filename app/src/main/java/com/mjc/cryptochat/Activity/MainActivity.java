@@ -70,6 +70,8 @@ public class MainActivity extends BaseActivity {
         });
 
         loadFragment(new MainSaloonFragment());
+
+        checkIfUsernameExist();
     }
 
     private void loadFragment(Fragment fragment) {

@@ -1,16 +1,26 @@
 package com.mjc.cryptochat.Activity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.mjc.cryptochat.Model.User;
 import com.mjc.cryptochat.R;
 
 public class BaseActivity extends AppCompatActivity {
@@ -95,6 +105,54 @@ public class BaseActivity extends AppCompatActivity {
 
     public String getUid() {
         return mAuth.getCurrentUser().getUid();
+    }
+
+    public void checkIfUsernameExist() {
+        mDatabase.child("users").child(getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get user value
+                User user = dataSnapshot.getValue(User.class);
+
+                if (user == null) {
+                    showDialogToSetUsername();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    private void showDialogToSetUsername() {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.setup_username);
+
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.FILL_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        final EditText username = dialog.findViewById(R.id.username);
+
+        dialog.findViewById(R.id.button_username_submit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                username.setError(null);
+                String usernameText = username.getText().toString();
+                if (!TextUtils.isEmpty(usernameText)) {
+                    mDatabase.child("users").child(getUid()).setValue(new User(usernameText));
+                    dialog.dismiss();
+                } else {
+                    username.setError(getString(R.string.error_field_required));
+                }
+            }
+        });
+
+        dialog.findViewById(R.id.cancelUsername).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override

@@ -56,5 +56,8 @@
     <string name="add_saloon">Add saloon</string>
 
     <string name="msg_default">You find the key !</string>
+    <string name="setup_username">Setup your username</string>
+    <string name="username_hint">Username</string>
+    <string name="submit">Save</string>
 
 </resources>
